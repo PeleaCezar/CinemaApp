@@ -1,0 +1,196 @@
+﻿@model IEnumerable<CinemaApp.ViewModels.MovieGenreViewModel>
+
+<body>
+
+    <div class="wrapper mm-active">
+        <div class=" content-page">
+            <div class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        @foreach (var movie in Model)
+                        {
+
+                            @: @{
+                                var photoPath = "~/Photo/" + (movie.Movie.PhotoPath ?? "noimage.jpg");
+                            }
+
+
+                            @*<div class="row">
+                                    <div class="col-12">
+                                    <div class="page-title-box">
+                                        <h4 class="page-title">Filme</h4>
+                                    </div>
+                                </div>
+                                </div>*@
+                            @* <div class="row mb-2">
+                                    <div class="col-sm-4">
+                                    <a href="Movies/Create" class="btn btn-success btn-rounded mb-3">
+                                        Adauga film
+                                    </a>
+                                </div>
+                                </div>*@
+
+                            <div class="col-md-6 col-xl-3">
+                                <div class="card d-block">
+                                    <img class="card-img-top" src="@photoPath" style="max-height: 150px;min-height: 150px;" asp-append-version="true" alt="movie image-cap" />
+                                    <div class="card-body position-relative">
+                                        @if(User.IsInRole("Administrator"))
+                                        { 
+                                        <div class="dropdown float-right">
+                                            <a href="#" class="dropdown-toggle text-muted arrow-none" data-toggle="dropdown" aria-expanded="false">
+                                                <i class="fas fa-ellipsis-v font-18"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <a class="dropdown-item btnEditTask" asp-action="Edit" asp-route-id="@movie.MovieID">
+                                                    <i class="fas fa-pencil-alt mr-1"></i>
+                                                    Editeaza
+                                                </a>
+                                                <a class="dropdown-item btnTaskDelete" asp-action="Delete" asp-route-id="@movie.MovieID">
+                                                    <i class="fas fa-trash mr-1"></i>
+                                                    Sterge
+                                                </a>
+                                            </div>
+                                        </div>
+                                        }
+                                        <h4 class="mt-0">
+                                            <a class="text-title">@movie.Name</a>
+                                        </h4>
+                                        <div class="row ">
+
+                                            <a class=" ml-2 btn-sm btn-outline-info" asp-action="Details" asp-route-id="@movie.MovieID">
+                                                Detalii
+                                            </a>
+
+                                            <a class=" ml-auto btn-sm btn-outline-success  " asp-action="ListOfSeats" asp-controller="Seats" asp-route-id="@movie.MovieID">
+                                                Rezervă
+                                            </a>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
+                        }
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+<style>
+
+    /*.container {
+        display: inline-block;
+    }*/
+    /* drop-down actions*/
+    .float-right {
+        float: right !important;
+    }
+
+    .dropdown-toggle {
+        white-space: nowrap;
+        content: inherit !important;
+    }
+
+        .dropdown-toggle::after {
+            content: inherit !important;
+        }
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*@model IEnumerable<CinemaApp.ViewModels.MovieGenreViewModel>
+
+    @{
+        ViewData["Title"] = "Index";
+    }
+
+    <h1>Index</h1>
+
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Description)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DateAdded)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ReleaseDate)
+                </th>
+                <th>
+                    Genre
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+    @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateAdded)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReleaseDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GenreName)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.MovieID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.MovieID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.MovieID">Delete</a>
+                </td>
+            </tr>
+    }
+        </tbody>
+    </table>*@

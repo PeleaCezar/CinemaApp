@@ -1,0 +1,221 @@
+﻿@model IEnumerable<CinemaApp.ViewModels.UserViewModel>
+
+    <header>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    </header>
+
+<div class="wrapper mm-active">
+    <div class="content-page">
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+
+                            <div class="card-header">
+                                <h3 class="card-title">Utilizatorii aplicatiei</h3>
+
+                                <div class="card-tools">
+                                    <div class="input-group input-group-sm" style="width: 150px;">
+                                        <input type="text" id="myInput" onkeyup="myFunction()"  class="form-control float-right" placeholder="Cautare">
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <div class="card-body p-0">
+                                        <table id="myTable" class="table table-striped projects table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 15%" class="text-center">
+                                                        Utilizator
+                                                    </th>
+                                                    <th style="width: 20%" class="text-center">
+                                                        Rol
+                                                    </th>
+                                                    <th style="width: 20%" class="text-center">
+                                                        Numar de telefon
+                                                    </th>
+
+                                                    <th style="width: 30%" class="text-center">
+                                                        Actiuni
+                                                    </th>
+                                                </tr>
+                                            </thead>
+
+
+                                            <tbody>
+                                                @foreach (var item in Model)
+                                                {
+
+                                                    <tr class="btnEdit" data-id="@item.ID">
+                                                      
+                                                            <td>
+                                                                @item.FullName
+                                                            </td>
+
+                                                            <td>
+                                                                @item.Role
+                                                            </td>
+
+                                                            <td>
+                                                                @item.PhoneNumber
+                                                            </td>
+                                                        
+                                                        <td class="movie-actions text-center">
+
+                                                            <a class="btn btn-light btn-sm btnEdit">
+                                                                <i class="far fa-edit">
+                                                                </i>
+                                                                Modifica rol
+                                                            </a>
+
+                                                            <a class="btn btn-light btn-sm" asp-action="Delete" asp-route-id="@item.ID">
+                                                                <i class="fas fa-trash">
+                                                                </i>
+                                                                Sterge utilizator
+                                                            </a>
+
+
+
+                                                        </td>
+
+                                                    </tr>
+                                                }
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Modal for User-->
+                        <div class="modal fade" id="modalEmployee" tabindex="-1" role="dialog" aria-labelledby="modalHoursTitle" aria-hidden="true">
+
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <label class="modal-title" id="nameEmployee"></label>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+
+                                    <div id="reservedRole" class="">
+                                        <div class="modal-body">
+                                            <label for="nameActualRole" style="text-align:center">Selectati un rol:</label>
+                                            <select class="form-control col-lg-6" id="nameActualRole" style="text-align:center">
+                                                <option hidden>Roluri</option>
+                                                <option>Administrator</option>
+                                                <option>Angajat</option>
+                                                <option>Client</option>
+                                            </select>
+                                        </div>
+                                        <div class="modal-footer justify-content-between">
+                                            <button type="button" class="btn btn-light text-left" >Inapoi</button>
+                                            <div class="text-right">
+                                                <button type="button" class="btn btn-primary btnSave" id="save-button" data-dismiss="modal">Salveaza</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('a.btnEdit').on('click', function (e) {
+        var id = $(this).closest('tr').data('id');
+        $('#modalEmployee').data('id', id).modal('show');
+        var response = undefined;
+        debugger;
+        $.ajax({
+            type: 'GET',
+            url: `/Administration/GiveEmail?id=${id}`,
+            async: false,
+            cache: false,
+            timeout: 5000,
+            error: function () {
+                return true;
+            },
+            success: function (data) {
+                response = data.data;
+            }
+        });
+        debugger;
+                    if (response !== undefined) {
+                var titleHeader = $('#nameEmployee').empty().append(response.fullName);
+                var email = (response.email);
+            }
+
+        $("#save-button").on("click", function () {
+            var id = $('#modalEmployee').data('id');
+            var role = $("#nameActualRole").val();
+            var email = (response.email);
+            $.ajax({
+                type: 'POST',
+                data: { email, role },
+                url: '/Administration/EditRole',
+                dataType: "text",
+                success: function (data) {
+                    window.location.reload();
+
+                }
+            });
+            debugger;
+
+        });
+
+    });
+
+    function myFunction() {
+        debugger;
+        var input, filter, tr, td, i, txtValue,table;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr")
+        debugger;
+
+        //cautam in toate randurile si ascundem rezultatele care nu se potrivesc cererii
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            debugger;
+            if (td) {
+                debugger;
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+                debugger;
+            }
+        }
+    }
+</script>
+
+<style>
+    .card-header {
+        background-color: transparent;
+        position: relative;
+    }
+    .card-title {
+        float: left;
+        font-size: 1.1rem;
+        margin: 0;
+    }
+    .card-tools {
+    float: right;
+    margin-right: -.625rem;
+
+    }
+</style>

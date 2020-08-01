@@ -1,0 +1,177 @@
+﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+.block {
+    width: 640px;
+    margin-bottom: 20px;
+}
+
+.movie-content-left {
+    float: left;
+    width: 155px;
+}
+
+.movie-content-right {
+    float: right;
+    width: 473px;
+}
+
+.summary {
+    line-height: 25px;
+}
+
+    .summary .leftSide {
+        font-size: 15px;
+        width: 100px;
+        float: left;
+    }
+
+    .summary .rightSide {
+        font-size: 15px;
+        float: left;
+        width: 78%;
+    }
+
+.clear {
+    clear: both;
+}
+
+a.navbar-brand {
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
+}
+
+/* Provide sufficient contrast against white background */
+a {
+    color: #0366d6;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.border-top {
+    border-top: 1px solid #e5e5e5;
+}
+
+.border-bottom {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+    font-size: 1rem;
+    line-height: inherit;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px; /* Vertically center the text there */
+}
+
+.btn-sm {
+    /*margin-left: 4.5rem !important;*/
+}
+
+body {
+    background-color: #fafbfe;
+    color: #6c757d;
+    font-family: Nunito,sans-serif;
+}
+
+.wrapper {
+    height: 100%;
+    overflow: hidden;
+    width: 100%;
+}
+/*
+                            .content-page {
+                                margin-left: 20px;
+                                overflow: hidden;
+                                padding: 70px 12px 65px;
+                                min-height: 100vh;
+                            }
+                            */
+body[data-leftbar-compact-mode=condensed] .wrapper .content-page {
+    margin-left: 70px;
+}
+
+.page-title-box .page-title {
+    font-size: 18px;
+    margin: 0;
+    line-height: 75px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: inherit;
+}
+
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+    margin: 10px 0;
+    font-weight: 700;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 0 35px 0 rgba(154,161,171,.15);
+    margin-bottom: 24px;
+}
+
+.card-img, .card-img-bottom, .card-img-top {
+    flex-shrink: 0;
+}
+
+.h4, h4 {
+    font-size: 1.125rem;
+}
+
+.btn-rounded {
+    border-radius: 2em;
+}
+
+.btn-succes {
+    color: #fff;
+    background-color: #0acf97;
+}
+a:hover {
+    text-decoration: none;
+}
