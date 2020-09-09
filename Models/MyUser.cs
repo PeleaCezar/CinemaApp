@@ -7,10 +7,6 @@ namespace CinemaApp.Models
     {
         public string FullName { get; set; }
 
-        public int? MovieID { get; set; }
-
-        public Movie Movie { get; set; }
-
         public ICollection<Reservation> Reservations { get; set; }
 
     }

@@ -1,8 +1,10 @@
-﻿<head>
+﻿@model CinemaApp.ViewModels.CinemaHall
+<head>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
 </head>
+
 
 <body>
     <h1 class="title"> Rezerva loc :</h1>
@@ -10,178 +12,165 @@
     <div class="theatre">
 
         <div class="cinema-seats left">
-            <div class="cinema-row row-1">
-                <div class="seat">
-                    <div class="text-center"> 1 </div>
+            @foreach (var leftHall in Model.LeftHall)
+            {
+                <div class=@($"cinema-row row-{leftHall.RowNr}")>
+                    @foreach (var seats in leftHall.Seats)
+                    {
+                        if (@seats.Status == "Liber")
+                        {
+                            <div class="seat">
+                                <div class="text-center" data-id="@seats.SeatNr">@seats.SeatNr</div>
+                            </div>
+                        }
+                        else if (seats.Status == "Ocupat")
+                        {
+                            <div class="seat active" style="pointer-events: none">
+                                <div class="text-center" data-id="@seats.SeatNr"><span>@seats.SeatNr (R)</span></div>
+                            </div>
+                        }
+                    }
                 </div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-            </div>
-
-            <div class="cinema-row row-2">
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-            </div>
-
-            <div class="cinema-row row-3">
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-            </div>
-
-            <div class="cinema-row row-4">
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-            </div>
-
-            <div class="cinema-row row-5">
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-            </div>
-
-            <div class="cinema-row row-6">
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-            </div>
-
-            <div class="cinema-row row-7">
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-            </div>
+            }
         </div>
 
 
         <div class="cinema-seats right">
-            <div class="cinema-row row-1">
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-            </div>
+            @foreach (var rightHall in Model.RightHall)
+            {
+                <div class=@($"cinema-row row-{rightHall.RowNr}")>
+                    @foreach (var seats in rightHall.Seats)
+                    {
 
-            <div class="cinema-row row-2">
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-            </div>
+                        if (@seats.Status == "Liber")
+                        {
+                            <div class="seat">
+                                <div class="text-center" data-id="@seats.SeatNr">@seats.SeatNr</div>
+                            </div>
+                        }
+                        else if (seats.Status == "Ocupat")
+                        {
+                            <div class="seat active" style="pointer-events: none">
+                                <div class="text-center" data-id="@seats.SeatNr"><span>@seats.SeatNr (R)</span></div>
+                            </div>
+                        }
 
-            <div class="cinema-row row-3">
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-            </div>
-
-            <div class="cinema-row row-4">
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-            </div>
-
-            <div class="cinema-row row-5">
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-            </div>
-
-            <div class="cinema-row row-6">
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-            </div>
-
-            <div class="cinema-row row-7">
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-                <div class="seat"></div>
-            </div>
+                    }
+                </div>
+            }
         </div>
 
+
+    </div>
+    <div class="screen text-center">SCREEN</div>
+
+    <!-- Modal Confirmation-->
+    <div class="modal fade" id="modalConfirm" tabindex="-1" role="dialog" aria-labelledby="modalConfirmTitle" aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <label class="modal-title"> Confirmare rezervare</label>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div id="reservedRole" class="">
+                    <div class="modal-body">
+                        <label for="nameActualRole" style="text-align:center">Selectati un rol:</label>
+                        <select class="form-control col-lg-6" id="nameActualRole" style="text-align:center">
+                            <option hidden>Roluri</option>
+                            <option>Administrator</option>
+                            <option>Angajat</option>
+                            <option>Client</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-light text-left">Inapoi</button>
+                        <div class="text-right">
+                            <button type="button" class="btn btn-primary btnSave" id="save-button" data-dismiss="modal">Confirma</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
 
+    <div class="reserve">
+        <div class=" card-body reservation">
+            <p> <strong> Film :</strong> @Model.MovieName</p>
+            <p> <strong> Data : </strong> <span>@Model.Date</span></p>
+            <p> <strong> Scaun : </strong> </p>
+
+            <ul id="selected-seats"></ul>
+            <p><strong> Locuri rezervate : </strong> <span id="counter">0</span></p>
+            <p><strong>Total : </strong><span id="total">0</span> RON</p>
+            <div class="confirm-form">
+                <button class="btn-light btnReserved" data-id="@Model.MovieID">Confirmare</button>
+            </div>
+            <div id="legend"> legenda</div>
+        </div>
+        <div style="clear:both"></div>
+    </div>
 </body>
 
-<script>
-    $(document).ready(function () {
-        $('.cinema-seats .seat').on('click', function () {
-            debugger;
-            $(this).toggleClass('active');
-        });
-    });
 
-</script>
 
 
 
 
 <style>
+    .screen {
+        position: absolute;
+        bottom: 0;
+        width: 50%;
+        background: #f8f9fa;
+        border-color: #f8f9fa;
+        color: #212529 !important;
+        margin-bottom: 230px;
+        box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+        margin-left: 15px;
+        margin-right: 15px;
+        border-radius: 5px;
+    }
+    
+
+
+    /* Reservation panel -----------------*/
+    .reservation {
+        background: #c6cace;
+        float: right;
+        position: relative;
+        width: 320px;
+        height: 450px;
+    }
+
+        .reservation p {
+            line-height: 26px;
+            font-size: 17.5px;
+            margin-bottom: 1.5rem;
+            margin-top: revert;
+        }
+    /* azure aliceblue ivory */
+    #selected-seats {
+        max-height: 150px;
+        overflow-y: auto;
+        width: 200px;
+        color: ivory;
+    }
+    /*#selected-seats li{float:left; width:72px; height:26px; line-height:26px; border:1px solid #d3d3d3; background:#f7f7f7; margin:6px; font-size:14px; font-weight:bold; text-align:center}*/
+
+    /*---finish */
     body {
-        background: #6c757d;
+        background: #c6cace;
     }
 
     .theatre {
         display: flex;
         position: absolute;
-        top: 50%;
+        top: 40%;
         left: 40%;
         transform: translate(-50%, -50%);
     }
@@ -230,53 +219,7 @@
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
     }
 
-    .left .row-2 {
-        transform: skew(-13deg);
-    }
 
-        .left .row-2 .seat {
-            transform: skew(18deg);
-        }
-
-    .left .row-3 {
-        transform: skew(-12deg);
-    }
-
-        .left .row-3 .seat {
-            transform: skew(16deg);
-        }
-
-    .left .row-4 {
-        transform: skew(-11deg);
-    }
-
-        .left .row-4 .seat {
-            transform: skew(15deg);
-        }
-
-    .left .row-5 {
-        transform: skew(-10deg);
-    }
-
-        .left .row-5 .seat {
-            transform: skew(12deg);
-        }
-
-    .left .row-6 {
-        transform: skew(-9deg);
-    }
-
-        .left .row-6 .seat {
-            transform: skew(10deg);
-        }
-
-    .left .row-7 {
-        transform: skew(-7deg);
-    }
-
-        .left .row-7 .seat {
-            transform: skew(8deg);
-        }
 
     .right {
         margin-left: 70px;
@@ -298,59 +241,82 @@
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
         }
 
-        .right .row-2 {
-            transform: skew(9deg);
-        }
-
-            .right .row-2 .seat {
-                transform: skew(-10deg);
-            }
-
-        .right .row-3 {
-            transform: skew(10deg);
-        }
-
-            .right .row-3 .seat {
-                transform: skew(-12deg);
-            }
-
-        .right .row-4 {
-            transform: skew(11deg);
-        }
-
-            .right .row-4 .seat {
-                transform: skew(-15deg);
-            }
-
-        .right .row-5 {
-            transform: skew(12deg);
-        }
-
-            .right .row-5 .seat {
-                transform: skew(-16deg);
-            }
-
-        .right .row-6 {
-            transform: skew(13deg);
-        }
-
-            .right .row-6 .seat {
-                transform: skew(-18deg);
-            }
-
-        .right .row-7 {
-            transform: skew(15deg);
-        }
-
-            .right .row-7 .seat {
-                transform: skew(-20deg);
-            }
 
 
-.text-center {
-    color:#F3686A;
-}
-.title {
-     color:#2517174f;
-}
+
+    .text-center {
+        color: #F3686A;
+    }
+
+    .title {
+        color: #2517174f;
+    }
 </style>
+
+
+<script>
+    $(document).ready(function () {
+        $(".confirm-form *").prop("disabled", true);
+        let count = 0;
+
+        $('.cinema-seats .seat').on('click', function (e) {
+            e.preventDefault();
+
+            var seatNr = $(this).children('div').data('id');
+            var $cart = $('#selected-seats');
+
+            var price = 20;
+            $total = $('#total');
+
+            if (!$(this).hasClass('active')) {
+                $('<div>Scaunul ' + (seatNr) + '</div>')
+                    .attr('id', 'seat-item-' + seatNr)
+                    .data('id', seatNr)
+                    .appendTo($cart);
+                $(this).toggleClass('active');
+                var theStatus = 'selected'
+                $(".confirm-form *").prop("disabled", false);
+                count++;
+                $('#counter').empty().append(count);
+                $total.text(recalculateTotal(count, price));
+            }
+
+
+            else if (theStatus = 'selected' && $(this).hasClass('active')) {
+                $('#seat-item-' + seatNr).remove();
+                $(this).removeClass('active');
+                count--;
+                if (count == 0) {
+                    $(".confirm-form *").prop("disabled", true);
+                }
+                $('#counter').empty().append(count);
+                $total.text(recalculateTotal(count, price));
+            }
+
+            else {
+                return "unavailable";
+            }
+        });
+    });
+
+
+    function recalculateTotal(count, price) {
+        var total = 0;
+        for (var i = 1; i <= count; i++) {
+            total += price;
+        }
+        return total;
+    }
+
+
+
+
+    $('button.btnReserved').on('click', function (e) {
+        debugger;
+        e.preventDefault();
+        var movieID = $(this).closest('button').data('id');
+        $('#modalConfirm').data('id', movieID).modal('show');
+        debugger;
+    })
+
+</script>

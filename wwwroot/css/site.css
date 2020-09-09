@@ -1,26 +1,26 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
-.block {
+/*.block {
     width: 640px;
     margin-bottom: 20px;
-}
+}*/
 
-.movie-content-left {
+/*.movie-content-left {
     float: left;
     width: 155px;
-}
+}*/
 
-.movie-content-right {
+/*.movie-content-right {
     float: right;
     width: 473px;
-}
+}*/
 
-.summary {
+/*.summary {
     line-height: 25px;
-}
+}*/
 
-    .summary .leftSide {
+    /*.summary .leftSide {
         font-size: 15px;
         width: 100px;
         float: left;
@@ -30,11 +30,11 @@ for details on configuring this project to bundle and minify static web assets. 
         font-size: 15px;
         float: left;
         width: 78%;
-    }
+    }*/
 
-.clear {
+/*.clear {
     clear: both;
-}
+}*/
 
 a.navbar-brand {
     white-space: normal;
@@ -118,11 +118,14 @@ body {
     font-family: Nunito,sans-serif;
 }
 
-.wrapper {
+/*
+    Index page with movie film
+-------------------------------------------------- */
+/*.wrapper {
     height: 100%;
     overflow: hidden;
     width: 100%;
-}
+}*/
 /*
                             .content-page {
                                 margin-left: 20px;
@@ -131,9 +134,10 @@ body {
                                 min-height: 100vh;
                             }
                             */
-body[data-leftbar-compact-mode=condensed] .wrapper .content-page {
+/*body[data-leftbar-compact-mode=condensed] .wrapper .content-page {
     margin-left: 70px;
-}
+}*/
+/*------finish*/
 
 .page-title-box .page-title {
     font-size: 18px;
@@ -164,9 +168,9 @@ body[data-leftbar-compact-mode=condensed] .wrapper .content-page {
     font-size: 1.125rem;
 }
 
-.btn-rounded {
+/*.btn-rounded {
     border-radius: 2em;
-}
+}*/
 
 .btn-succes {
     color: #fff;

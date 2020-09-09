@@ -486,3 +486,7 @@ C:\Users\Cezar\source\repos\CinemaApp\CinemaApp\obj\Debug\netcoreapp3.1\CinemaAp
 C:\Users\Cezar\source\repos\CinemaApp\CinemaApp\obj\Debug\netcoreapp3.1\Razor\Views\Administration\ListWithUsers.cshtml.g.cs
 C:\Users\Cezar\source\repos\CinemaApp\CinemaApp\obj\Debug\netcoreapp3.1\Razor\Views\Administration\Delete.cshtml.g.cs
 C:\Users\Cezar\source\repos\CinemaApp\CinemaApp\obj\Debug\netcoreapp3.1\Razor\Views\Seats\ListOfSeats.cshtml.g.cs
+C:\Users\Cezar\source\repos\CinemaApp\CinemaApp\obj\Debug\netcoreapp3.1\CinemaApp.csproj.CoreCompileInputs.cache
+C:\Users\Cezar\source\repos\CinemaApp\CinemaApp\obj\Debug\netcoreapp3.1\CinemaApp.genruntimeconfig.cache
+C:\Users\Cezar\source\repos\CinemaApp\CinemaApp\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_AddRunTime.cshtml.g.cs
+C:\Users\Cezar\source\repos\CinemaApp\CinemaApp\obj\Debug\netcoreapp3.1\Razor\Views\RunningTime\ViewRanTimeMovie.cshtml.g.cs

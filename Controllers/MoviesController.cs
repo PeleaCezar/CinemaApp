@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Authorization;
 
 namespace CinemaApp.Controllers
-{    
+{
     public class MoviesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -26,28 +26,23 @@ namespace CinemaApp.Controllers
             _context = context;
         }
 
-        // GET: Movies
+        // get: movies
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = await _context.Movies.Include(m => m.Genre).ToListAsync();
+            var applicationdbcontext = await _context.Movies.Include(m => m.MovieGenres).ToListAsync();
             List<MovieGenreViewModel> model = new List<MovieGenreViewModel>();
-            foreach(var movie in applicationDbContext)
+            foreach (var movie in applicationdbcontext)
             {
-                var movieToModel = new MovieGenreViewModel();
-                movieToModel.Movie = movie;
-                movieToModel.MovieID = movie.ID;
-                movieToModel.Name = movie.Name;
-                //astea se vor muta in details
-                movieToModel.Description = movie.Description;
-                movieToModel.DateAdded = movie.DateAdded;
-                movieToModel.ReleaseDate = movie.ReleaseDate;
-                var genre =  await _context.Genres.FirstOrDefaultAsync(p => p.Id == movie.GenreID);
-                movieToModel.GenreName = genre.Name;
-                model.Add(movieToModel);
+                var movietomodel = new MovieGenreViewModel();
+                movietomodel.Name = movie.Name;
+                movietomodel.MovieID = movie.ID;
+                movietomodel.Description = movie.Description;
+                movietomodel.DateAdded = movie.DateRunning;
+                movietomodel.ReleaseDate = movie.ReleaseDate;
+                movietomodel.Movie = movie;
+                model.Add(movietomodel);
             }
             return View(model);
-            //var applicationDbContext = _context.Movies.Include(m => m.Genre);
-            //return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: Movies/Details/5
@@ -60,41 +55,46 @@ namespace CinemaApp.Controllers
             List<MovieGenreViewModel> listWithMovie = new List<MovieGenreViewModel>();
             var model = new MovieGenreViewModel();
             var movie = await _context.Movies.FirstOrDefaultAsync(m => m.ID == id);
+            model.MovieID = movie.ID;
             model.Name = movie.Name;
             model.Movie = movie;
             model.Description = movie.Description;
             model.ReleaseDate = movie.ReleaseDate;
-            model.DateAdded = movie.DateAdded;
+            model.DateAdded = movie.DateRunning;
 
-            var genre = await _context.Genres.FirstOrDefaultAsync(p => p.Id == movie.GenreID);
-            model.GenreName = genre.Name;
+            model.GenreNames = new List<string>();
+            var genres = await _context.MovieGenres.Where(u => u.MovieID == movie.ID).ToListAsync();
+             foreach (var genre in genres )
+            {
+                var genree = await _context.Genres.FirstOrDefaultAsync(p => p.Id == genre.GenreID);
+                model.GenreNames.Add(genree.Name);
+            }
             listWithMovie.Add(model);
             return View(listWithMovie);
-
-
-
-
-            //var movie = await _context.Movies
-            //    .Include(m => m.Genre)
-            //    .FirstOrDefaultAsync(m => m.ID == id);
-            //if (movie == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //return View(movie);
         }
 
 
         // GET: Movies/Create
         [Authorize(Roles = "Administrator")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["GenreName"] = new SelectList(_context.Set<Genre>(), "Name", "Name");
+            var genres = new List<string>();
+            await FillGenreFromMovie(genres);
+            ViewData["GenreNames"] = genres;
+
             return View();
         }
 
-        
+        private async Task<object>FillGenreFromMovie (List<string> genres)
+        {
+            foreach (Genre genre in await _context.Genres.ToListAsync())
+            {  
+                var genreMovie =  await _context.Genres.FindAsync(genre.Id);
+                genres.Add(genreMovie.Name);
+            }
+            return null;
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
@@ -103,30 +103,38 @@ namespace CinemaApp.Controllers
             if (ModelState.IsValid)
             {
                 string uniqueFileName = null;
-                if(viewModel.Photo!= null)
+                if (viewModel.Photo != null)
                 {
                     string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "Photo");
                     uniqueFileName = Guid.NewGuid().ToString() + "_" + viewModel.Photo.FileName;
                     string filePath = Path.Combine(uploadsFolder, uniqueFileName);
                     viewModel.Photo.CopyTo(new FileStream(filePath, FileMode.Create));
                 }
-               
+
                 var movie = new Movie();
                 movie.Name = viewModel.Name;
                 movie.Description = viewModel.Description;
-                movie.DateAdded = viewModel.DateAdded;
+                movie.DateRunning = viewModel.DateAdded;
                 movie.ReleaseDate = viewModel.ReleaseDate;
                 movie.PhotoPath = uniqueFileName;
                 movie.Duration = viewModel.Duration;
-                var genre = await _context.Genres.FirstOrDefaultAsync(p => p.Name.Equals(viewModel.GenreName));
-                genre.Name = viewModel.GenreName;
-                movie.GenreID = genre.Id;
-                //movie.GenreID = genreId;
                 _context.Add(movie);
+                await _context.SaveChangesAsync();
+                if (viewModel.GenreNames.Count > 0)
+                {
+                    foreach (var moviegenre in viewModel.GenreNames)
+                    {
+                        var genre = await _context.Genres.FirstOrDefaultAsync(p => p.Name.Equals(moviegenre));
+                        MovieGenre movieGenre = new MovieGenre();
+                        movieGenre.MovieID = movie.ID;
+                        movieGenre.GenreID = genre.Id;
+                        _context.MovieGenres.Add(movieGenre);
+                    }
+                }
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-           
+
             return View(viewModel);
         }
 
@@ -134,33 +142,37 @@ namespace CinemaApp.Controllers
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
             var movie = await _context.Movies.FindAsync(id);
-            
+
             if (movie == null)
             {
                 return NotFound();
-            }           
-                var movieModel = new MovieGenreViewModel();
-                movieModel.MovieID = movie.ID;
-                movieModel.Name = movie.Name;
-                movieModel.Description = movie.Description;
-                movieModel.DateAdded = movie.DateAdded;
-                movieModel.ReleaseDate = movie.ReleaseDate;
-                movieModel.Duration = movie.Duration;
-                var genre = await _context.Genres.FirstOrDefaultAsync(p => p.Id == movie.GenreID);
-                movieModel.GenreName = genre.Name;
+            }
+            var movieModel = new MovieGenreViewModel();
+            movieModel.MovieID = movie.ID;
+            movieModel.Name = movie.Name;
+            movieModel.Description = movie.Description;
+            movieModel.DateAdded = movie.DateRunning;
+            movieModel.ReleaseDate = movie.ReleaseDate;
+            movieModel.Duration = movie.Duration;
 
+            var genres = new List<string>();
+            await FillGenreFromMovie(genres); // pentru  selectare itemelor din drop-down
+            ViewData["GenreNames"] = genres;
 
+            var genreMovie = new List<string>();
+            foreach (MovieGenre movieGenre in await _context.MovieGenres.Include(p => p.Genre).Where(u => u.MovieID == id).ToListAsync())
+            {
+                var genre =  await _context.Genres.FirstOrDefaultAsync(p => p.Id == movieGenre.GenreID);
+                genreMovie.Add(genre.Name);
+            }
+            movieModel.GenreNames = genreMovie;
 
-            ViewData["GenreName"] = new SelectList(_context.Set<Genre>(), "Name", "Name");
-            return View(movieModel);
+                return View(movieModel);
         }
         
+
         // POST: Movies/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -168,8 +180,42 @@ namespace CinemaApp.Controllers
         public async Task<IActionResult> Edit(int id, MovieGenreViewModel movieModel)
         {
             var movie = await _context.Movies.FirstOrDefaultAsync(p => p.ID == id);
-            var genre = await _context.Genres.FirstOrDefaultAsync(m => m.Name.Equals(movieModel.GenreName));
-           
+
+            string uniqueFileName = null;
+            if (movieModel.Photo != null)
+            {
+                string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "Photo");
+                uniqueFileName = Guid.NewGuid().ToString() + "_" + movieModel.Photo.FileName;
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                movieModel.Photo.CopyTo(new FileStream(filePath, FileMode.Create));
+            }
+
+            movie.Name = movieModel.Name;
+            movie.Description = movieModel.Description;
+            movie.DateRunning = movieModel.DateAdded;
+            movie.ReleaseDate = movieModel.ReleaseDate;
+            movie.PhotoPath = uniqueFileName;
+            movie.Duration = movieModel.Duration;
+            _context.Update(movie);
+
+            var movieWithgenres = await _context.MovieGenres.Include(prop => prop.Genre).Where(m => m.MovieID == id).ToListAsync();
+            foreach (MovieGenre mg in movieWithgenres)
+            {
+                _context.MovieGenres.Remove(mg);
+                await _context.SaveChangesAsync();
+            }
+            if (movieModel.GenreNames.Count > 0)
+            {
+                foreach (var moviegenre in movieModel.GenreNames)
+                {
+                    var genre = await _context.Genres.FirstOrDefaultAsync(p => p.Name.Equals(moviegenre));
+                    MovieGenre movieGenre = new MovieGenre();
+                    movieGenre.MovieID = movie.ID;
+                    movieGenre.GenreID = genre.Id;
+                    _context.MovieGenres.Add(movieGenre);
+                    
+                }
+            }
 
             if (id != movie.ID)
             {
@@ -180,24 +226,8 @@ namespace CinemaApp.Controllers
             {
                 try
                 {
-                    string uniqueFileName = null;
-                    if (movieModel.Photo != null)
-                    {
-                        string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "Photo");
-                        uniqueFileName = Guid.NewGuid().ToString() + "_" + movieModel.Photo.FileName;
-                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                        movieModel.Photo.CopyTo(new FileStream(filePath, FileMode.Create));
-                    }
-
-                    movie.Name = movieModel.Name;
-                    movie.Description = movieModel.Description;
-                    movie.DateAdded = movieModel.DateAdded;
-                    movie.ReleaseDate = movieModel.ReleaseDate;
-                    movie.PhotoPath = uniqueFileName;
-                    movie.Duration = movieModel.Duration;
-                    movie.GenreID = genre.Id;
-                    _context.Update(movie);
                     await _context.SaveChangesAsync();
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -212,7 +242,6 @@ namespace CinemaApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GenreID"] = new SelectList(_context.Set<Genre>(), "Id", "Id", movie.GenreID);
             return View(movie);
         }
 
@@ -225,7 +254,7 @@ namespace CinemaApp.Controllers
                 return NotFound();
             }
             var movieModel = new MovieGenreViewModel();
-            var movie = await _context.Movies.Include(m => m.Genre).FirstOrDefaultAsync(m => m.ID == id);
+             var movie = await _context.Movies.FirstOrDefaultAsync(m => m.ID == id);
             if (movie == null)
             {
                 return NotFound();
@@ -234,10 +263,9 @@ namespace CinemaApp.Controllers
             movieModel.MovieID = movie.ID;
             movieModel.Name = movie.Name;
             movieModel.Description = movie.Description;
-            movieModel.DateAdded = movie.DateAdded;
+            movieModel.DateAdded = movie.DateRunning;
             movieModel.ReleaseDate = movie.ReleaseDate;
-            var genre = await _context.Genres.FirstOrDefaultAsync(p => p.Id == movie.GenreID);
-            movieModel.GenreName = genre.Name;
+
 
 
 

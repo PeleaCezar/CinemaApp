@@ -29,7 +29,7 @@ namespace CinemaApp.Controllers
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> ListWithUsers()
         {
-            var applicationDbContext = await _userManager.Users.Include(e => e.Movie).ToListAsync();
+            var applicationDbContext = await _userManager.Users.ToListAsync();
             List<UserViewModel> model = new List<UserViewModel>();
             foreach (var user in applicationDbContext)
             {
@@ -94,7 +94,6 @@ namespace CinemaApp.Controllers
             }
 
             var user = await _context.Users
-                .Include(m => m.Movie)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (user == null)
             {

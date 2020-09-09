@@ -11,7 +11,7 @@ namespace CinemaApp.Models
 
         public string Description { get; set; }
 
-        public DateTime DateAdded { get; set; }
+        public DateTime DateRunning{ get; set; }
 
         public DateTime ReleaseDate { get; set; }
 
@@ -19,11 +19,12 @@ namespace CinemaApp.Models
 
         public string PhotoPath { get; set; }
 
+
+        public ICollection<RunningTime> RunningTimes { get; set; }
+
         public ICollection<MyUser> MyUsers { get; set; }
 
-        public int? GenreID { get; set; }
-
-        public Genre Genre { get; set; }
+        public ICollection<MovieGenre> MovieGenres { get; set; }
 
         public ICollection<Reservation> Reservations { get; set; }
 

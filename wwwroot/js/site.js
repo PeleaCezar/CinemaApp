@@ -2,7 +2,7 @@
 // Write your JavaScript code.
 
 function GAPI_Load() {
-    gapi.client.setApiKey("AIzaSyBJKEGZbRJJZyZBYa79_9hB5-u3oNIjyok");
+    gapi.client.setApiKey("AIzaSyCSwzUAHKIs5UbS20dcgszFAOKYuaYlEGs");
 }
 function searchMovie(movieName) {
     var qSearch = movieName + " trailer";

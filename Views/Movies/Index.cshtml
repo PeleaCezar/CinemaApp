@@ -1,8 +1,57 @@
 ﻿@model IEnumerable<CinemaApp.ViewModels.MovieGenreViewModel>
 
 <body>
+     <div class="mx-auto d-flex flex-wrap justify-content-center justify-content-lg-start" style="max-width:1088px;">
+         @foreach ( var movie in Model)
+         {
 
-    <div class="wrapper mm-active">
+             @: @{ 
+                 var photoPath = "~/Photo/" + (movie.Movie.PhotoPath ?? "noimage.jpg");
+             }
+         <div class="card movie-card m-3"
+             style="width: 13.8rem;">
+             <a asp-action="Details" asp-route-id="@movie.MovieID" style="color:black; text-decoration:none;">
+                 <img class="card-img-top" src="@photoPath" asp-append-version="true" style="max-height: 220px;min-height: 220px;max-width: 220.9px;min-width: 220.9px;" />
+                 <div class="card-body" style="padding-bottom:0; height:44px;">
+                     @if (User.IsInRole("Administrator"))
+                     {
+                         <div class="dropdown float-right">
+                             <a href="#" class="dropdown-toggle text-muted arrow-none" data-toggle="dropdown" aria-expanded="false">
+                                 <i class="fas fa-ellipsis-v font-18"></i>
+                             </a>
+                             <div class="dropdown-menu dropdown-menu-right">
+                                 <a class="dropdown-item btnEditTask" asp-action="Edit" asp-route-id="@movie.MovieID">
+                                     <i class="fas fa-pencil-alt mr-1"></i>
+                                     Editeaza
+                                 </a>
+                                 <a class="dropdown-item btnTaskDelete" asp-action="Delete" asp-route-id="@movie.MovieID">
+                                     <i class="fas fa-trash mr-1"></i>
+                                     Sterge
+                                 </a>
+                             </div>
+                         </div>
+                     }
+                     @if (movie.Name.Count() < 10)
+                     {
+                         <h5 class="card-title mb-0"> @movie.Name</h5>
+                     }
+                     else
+                     {
+                         <h4 class="card-title mb-0">@movie.Name</h4>
+                     }
+                 </div>
+                 <div class="card-footer text-muted" style="background: none; border-top: none;">
+                     <div class="d-flex">
+                         <p class="card-text mb-0"><small>@movie.ReleaseDate</small></p>
+
+                     </div>
+                 </div>
+             </a>
+         </div>
+
+         }
+     </div>
+    @*<div class="wrapper mm-active">
         <div class=" content-page">
             <div class="content">
                 <div class="container-fluid">
@@ -14,21 +63,6 @@
                                 var photoPath = "~/Photo/" + (movie.Movie.PhotoPath ?? "noimage.jpg");
                             }
 
-
-                            @*<div class="row">
-                                    <div class="col-12">
-                                    <div class="page-title-box">
-                                        <h4 class="page-title">Filme</h4>
-                                    </div>
-                                </div>
-                                </div>*@
-                            @* <div class="row mb-2">
-                                    <div class="col-sm-4">
-                                    <a href="Movies/Create" class="btn btn-success btn-rounded mb-3">
-                                        Adauga film
-                                    </a>
-                                </div>
-                                </div>*@
 
                             <div class="col-md-6 col-xl-3">
                                 <div class="card d-block">
@@ -79,7 +113,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>*@
 
 </body>
 <style>
@@ -100,6 +134,14 @@
         .dropdown-toggle::after {
             content: inherit !important;
         }
+
+    .movie-card {
+    cursor: pointer;
+}
+ .movie-card:hover {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+ }
+
 </style>
 
 

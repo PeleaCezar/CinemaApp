@@ -7,59 +7,88 @@
     @: @{
         var photoPath = "~/Photo/" + (movie.Movie.PhotoPath ?? "noimage.jpg");
     }
-    <h2> Movie </h2>
-    <p>
-        <a asp-action="Index">Inapoi la filme</a>
-    </p>
-    <div class="block">
-        <div class="left movie-content-left">
-            <img class="card-img-top" src="@photoPath" style="max-height: 150px;min-height: 150px; max-width:190px; min-width:50px;" asp-append-version="true" alt="movie image-cap" />
 
-            <div class="movie-name info">
-                <h4>
-                    @movie.Name
-                </h4>
-                <span>
-                    @movie.DateAdded
-                </span>
 
+    <div class="jumbotron">
+        <div class="row">
+            <div class="col-xl-4 col-md-6 offset-md-3 offset-lg-0 text-center">
+                <img class="img-fluid jumbo-image" style="max-height: 100px;min-height: 430px;" src="@photoPath" asp-append-version="true" alt="movie image-cap" />
+                <br class="d-lg-none" /><br class="d-lg-none" />
             </div>
-        </div>
+            <div class="col">
+                <h1 class="display-4">@movie.Name</h1>
+                <hr class="my-4">
+                <span>
+                    @if (movie.Description.Count() > 500)
+                    {
 
-        <div class="right movie-content-right">
-            <div class="movie-landing-content">
-                <h1 class="ml-2">@movie.Name</h1>
-                <p class="ml-2">@movie.Description</p>
-                <div class="summary">
-                    <div class="leftSide">
-                        Gen
-                    </div><div class="rightSide">
-                        @movie.GenreName
-                    </div><div class="clear">
+                        <a class="btn btn-primary btn-sm m-1" role="button" data-toggle="modal" data-target="#description-modal">Read more</a>
 
-                    </div><div class="leftSide">
-                        Data publicarii
-                    </div><div class="rightSide">
-                        @movie.ReleaseDate
-                    </div><div class="clear">
-                    </div>
+                    }
+                    else
+                    {
+                        @movie.Description
+                    }
+                </span>
+                <br /><br />
 
+                <p><strong>Director: </strong><a> Chritian Garcia </a></p>
+                <p>
+                    <strong> Genres: </strong>
+                    @foreach (var genre in movie.GenreNames)
+                     {
+                    <a class="badge badge-secondary">@genre</a>
+                     }
+                </p>
+
+
+                <p><strong>Release Date: </strong>@movie.ReleaseDate</p>
+
+                <p><strong>Runtime: </strong>@movie.Duration</p>
+
+                <div class="d-flex align-items-center mt-4">
+                    <a class="btn btn-primary mr-3" href="#" role="button" data-toggle="modal" data-target="#watch-modal">Watch Thriler</a>
+
+                    <a class="btn btn-info mr-3" asp-action="ListOfSeats" asp-controller="Seats" asp-route-id="@movie.MovieID">
+                        Rezervă
+                    </a>
+
+                    <a class=" ml-auto btn btn-success mr-3" asp-action="Index">Inapoi la filme</a>
 
                 </div>
             </div>
+        </div>
+    </div>
 
-            <div class="video" id="trailer">
-                <script>
-                    setTimeout(function () {
-                        searchMovie('@movie.Name')
-                        debugger;
-                    }, 500);
-                </script>
+    <div class="modal fade" id="watch-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title"> @movie.Name</h2>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="embed-responsive embed-responsive-16by9">
+                        <div class="video" id="trailer">
+                            <script>
+                              setTimeout(function () {
+                                searchMovie('@movie.Name')
+                                debugger;
+                                }, 500);
+                            </script>
 
 
+                        </div>
+                    </div>
+                    <br />
+                    <p>
+                        <strong>Descriere </strong>@movie.Description
+                    </p>
+                </div>
             </div>
         </div>
-        <div class="clear"></div>
     </div>
 }
 
@@ -67,9 +96,22 @@
 
 
 
+<style>
+
+    .jumbotron {
+        padding: 42px;
+    }
+
+    .jumbo-image {
+        cursor: pointer;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+    .badge-secondary {
+        color : #fff !important;
+    }
 
 
-
+</style>
 
 
 

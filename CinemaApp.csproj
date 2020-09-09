@@ -16,6 +16,18 @@
     <Compile Remove="Data\Migrations\20200707200517_UserReservation.Designer.cs" />
     <Compile Remove="Data\Migrations\20200724145326_Reservations.cs" />
     <Compile Remove="Data\Migrations\20200724145326_Reservations.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200829163448_Reservation-Cinema-Seat.cs" />
+    <Compile Remove="Data\Migrations\20200829163448_Reservation-Cinema-Seat.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200829165745_Reservation-Cinema-Seat.cs" />
+    <Compile Remove="Data\Migrations\20200829165745_Reservation-Cinema-Seat.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200830160726_Reservation-Cinema-Seat.cs" />
+    <Compile Remove="Data\Migrations\20200830160726_Reservation-Cinema-Seat.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200830200859_AddSeatss.cs" />
+    <Compile Remove="Data\Migrations\20200830200859_AddSeatss.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200830201005_AddSeat.cs" />
+    <Compile Remove="Data\Migrations\20200830201005_AddSeat.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200830212437_SeedSeatTen.cs" />
+    <Compile Remove="Data\Migrations\20200830212437_SeedSeatTen.Designer.cs" />
   </ItemGroup>
 
 

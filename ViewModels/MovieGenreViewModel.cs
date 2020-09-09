@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CinemaApp.ViewModels
 {
@@ -28,11 +26,10 @@ namespace CinemaApp.ViewModels
         public Movie Movie { get; set; }
 
         //Fields for Genre
+        public List<string> GenreNames {get; set; }
 
-        public int GenreId { get; set; }
-
-        public string GenreName { get; set; }
-
+        //Fields for CinemaHall
+        public string CinemaName { get; set; }
 
 
 

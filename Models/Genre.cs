@@ -8,6 +8,8 @@ namespace CinemaApp.Models
 
         public string Name { get; set; }
 
-        public ICollection<Movie> Movies { get; set; }
+       // public ICollection<Movie> Movies { get; set; }
+
+        public ICollection<MovieGenre> MovieGenres { get; set; }
     }
 }

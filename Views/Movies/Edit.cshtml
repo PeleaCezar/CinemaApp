@@ -3,6 +3,13 @@
 @{
     ViewData["Title"] = "Edit";
 }
+    <head>
+        <!-- Select2 -->
+        <link rel="stylesheet" href="~/Select file/select2.min.css">
+        <link rel="stylesheet" href="~/Select file/select2-bootstrap4.min.css">
+
+    </head>
+
 
 <h1>Actualizare</h1>
 
@@ -39,8 +46,9 @@
                 <span asp-validation-for="Duration" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="GenreName" class="control-label"></label>
-                <select asp-for="GenreName" class="form-control" asp-items="ViewBag.GenreName"></select>
+                <label asp-for="GenreNames" class="control-label"> Genul </label>
+                <select asp-for="GenreNames" class="select2" multiple="multiple" data-placeholder="Selecteaza un gen" asp-items="@(new SelectList(ViewBag.GenreNames))" style="width: 100%;">
+                </select>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-12">
@@ -65,6 +73,9 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
+<!-- Select2 -->
+<script src="~/Select file/select2.full.min.js" defer></script>
+
 @section Scripts {
     <script>
         $(document).ready(function () {
@@ -74,6 +85,16 @@
                 debugger;
             });
         });
+
+        $(function () {
+            //Initialize Select2 elements
+            $('.select2').select2()
+
+            //Initialize Select2 Elements
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            })
+        })
     </script>
 }
 
