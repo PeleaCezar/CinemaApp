@@ -9,56 +9,100 @@
     }
 
 
-    <div class="jumbotron">
-        <div class="row">
-            <div class="col-xl-4 col-md-6 offset-md-3 offset-lg-0 text-center">
-                <img class="img-fluid jumbo-image" style="max-height: 100px;min-height: 430px;" src="@photoPath" asp-append-version="true" alt="movie image-cap" />
-                <br class="d-lg-none" /><br class="d-lg-none" />
-            </div>
-            <div class="col">
-                <h1 class="display-4">@movie.Name</h1>
-                <hr class="my-4">
-                <span>
-                    @if (movie.Description.Count() > 500)
-                    {
 
-                        <a class="btn btn-primary btn-sm m-1" role="button" data-toggle="modal" data-target="#description-modal">Read more</a>
 
-                    }
-                    else
-                    {
-                        @movie.Description
-                    }
-                </span>
-                <br /><br />
+<div class="jumbotron">
+    <div class="row">
+        <div class="col-xl-4 col-md-6 offset-md-3 offset-lg-0 text-center">
+            <img class="img-fluid jumbo-image" style="max-height: 100px;min-height: 430px;" src="@photoPath" asp-append-version="true" alt="movie image-cap" />
+            <br class="d-lg-none" /><br class="d-lg-none" />
+        </div>
+        <div class="col">
+            <h1 class="display-4">@movie.Name</h1>
+            <hr class="my-4">
+            <span>
+                @if (movie.Description.Count() > 800)
+                {
 
-                <p><strong>Director: </strong><a> Chritian Garcia </a></p>
-                <p>
-                    <strong> Genres: </strong>
-                    @foreach (var genre in movie.GenreNames)
-                     {
+                    <a class="btn btn-primary btn-sm m-1" role="button" data-toggle="modal" data-target="#description-modal">Read more</a>
+
+                }
+                else
+                {
+                    @movie.Description
+                }
+            </span>
+            <br /><br />
+
+            <p><strong>Director: </strong><a> Chritian Garcia </a></p>
+            <p>
+                <strong> Genres: </strong>
+                @foreach (var genre in movie.GenreNames)
+                {
                     <a class="badge badge-secondary">@genre</a>
-                     }
-                </p>
+                }
+            </p>
 
 
-                <p><strong>Release Date: </strong>@movie.ReleaseDate</p>
+            <p><strong>Release Date: </strong>@movie.ReleaseDate</p>
 
-                <p><strong>Runtime: </strong>@movie.Duration</p>
+            <p><strong>Runtime: </strong>@movie.Duration</p>
 
-                <div class="d-flex align-items-center mt-4">
-                    <a class="btn btn-primary mr-3" href="#" role="button" data-toggle="modal" data-target="#watch-modal">Watch Thriler</a>
+            <div class="d-flex align-items-center mt-4">
+                <a class="btn btn-primary mr-3" href="#" role="button" data-toggle="modal" data-target="#watch-modal">Watch Thriler</a>
 
-                    <a class="btn btn-info mr-3" asp-action="ListOfSeats" asp-controller="Seats" asp-route-id="@movie.MovieID">
-                        Rezervă
-                    </a>
+                <button class="btn btn-info mr-3" id="bookingButton" onclick="onClickBooking()">
+                    <i class="far fa-calendar-alt"></i>
+                    <span class="font-weight-medium"> Arată-mi programul</span>
+                </button>
 
-                    <a class=" ml-auto btn btn-success mr-3" asp-action="Index">Inapoi la filme</a>
+                <a class=" ml-auto btn btn-success mr-3" asp-action="Index">Inapoi la filme</a>
 
-                </div>
             </div>
         </div>
     </div>
+    @foreach (var bookings in Model)
+    {
+
+
+            <div id="booking" style="display:none">
+                <div class="booking-inserted">
+                    <p class="m-0 font-size-small"></p>
+                    <div class="text-center">
+                    </div>
+                    @if (bookings.AllBookings.Count != 0)
+                    {
+                        @foreach (var booking in bookings.AllBookings)
+                        {
+
+                            <a asp-action="VerifyCinemaHallandDate" asp-controller="RunningTime" asp-route-id="@bookings.MovieID" asp-route-StartDate="@booking.StartDate" />
+                            <div class="d-flex w-100">
+                                <div class="appointment-container my-1 mr-1 booking-inserted">
+                                    <div class="date text-center d-inline-flex justify-content-center flex-column border-positive p-1 border-no-shadow my-auto">
+                                        <div class="font-weight-regular m-0">@booking.DayOfWeek</div>
+                                        <div class="font-weight-bold m-0">@booking.HourOfDay</div>
+                                        <div class="font-weight-regular m-0">@booking.DayOfMonth @booking.MonthOfYear.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center">
+                            <span class="font-size text-danger"> Nu este nicio programare disponibila pentru acest film.</span>
+                        </div>
+                    }
+
+
+                    
+                </div>
+            </div>
+
+    }
+
+</div>
+
 
     <div class="modal fade" id="watch-modal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -75,7 +119,6 @@
                             <script>
                               setTimeout(function () {
                                 searchMovie('@movie.Name')
-                                debugger;
                                 }, 500);
                             </script>
 
@@ -84,7 +127,7 @@
                     </div>
                     <br />
                     <p>
-                        <strong>Descriere </strong>@movie.Description
+                        <strong>Descriere : </strong>@movie.Description
                     </p>
                 </div>
             </div>
@@ -97,7 +140,13 @@
 
 
 <style>
-
+    .booking-inserted {
+        display: flex;
+        margin-left: 5px;
+        position: relative;
+        left: -10px;
+    }
+    
     .jumbotron {
         padding: 42px;
     }
@@ -106,16 +155,69 @@
         cursor: pointer;
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     }
+
     .badge-secondary {
-        color : #fff !important;
+        color: #fff !important;
     }
 
+    /*booking inserted*/
+    .font-size-small {
+        font-size: .765rem !important
+    }
 
+    p {
+        line-height: 1.4;
+    }
+
+    .date {
+        width: 4rem;
+        height: 4rem;
+        border-radius: 100%;
+        font-size: 0.8rem;
+        line-height: 0.8rem;
+        font-weight: 400 !important;
+    }
+
+    .border-positive {
+        border: .1rem solid #58c314;
+        /*box-shadow: 0 6px 20px 1px rgba(88,195,20,.43);*/
+        background: #fefeff;
+    }
+
+    .border-no-shadow {
+        box-shadow: none;
+    }
+
+    .font-weight-regular {
+        font-weight: 400 !important;
+    }
+    .text-danger {
+        color: #e91e63 !important;
+        fill: #e91e63 !important;
+    }
+    .font-size {
+        font-size: .865rem !important
+    }
 </style>
 
 
 
-
+<script>
+   function onClickBooking(){
+       var myBooking = document.getElementById('booking');      
+       var displaySetting = myBooking.style.display; // get the current value of myBooking display property
+      // var myBookingButton = document.getElementById('bookingButton');
+        // toggle the booking and the button text, depending on current state
+       if (displaySetting == 'block') {
+           myBooking.style.display = 'none';
+          // myBookingButton.innerHTML = "Arata-mi programul";
+       }
+       else {
+           myBooking.style.display = 'block';
+          // myBookingButton.innerHTML = "Ascunde programul";
+       } 
+    }
+</script>
 
 
 

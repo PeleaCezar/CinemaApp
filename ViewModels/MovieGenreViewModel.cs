@@ -15,11 +15,9 @@ namespace CinemaApp.ViewModels
 
         public string Description { get; set; }
 
-        public DateTime DateAdded { get; set; }
-
         public DateTime ReleaseDate { get; set; }
 
-        public decimal Duration { get; set; }
+        public string Duration { get; set; }
 
         public IFormFile Photo { get; set; }
 
@@ -29,8 +27,11 @@ namespace CinemaApp.ViewModels
         public List<string> GenreNames {get; set; }
 
         //Fields for CinemaHall
-        public string CinemaName { get; set; }
+        // public string CinemaName { get; set; }
 
+        //booking
+        public List<BookingModel> AllBookings { get; set; }
+        
 
 
     }

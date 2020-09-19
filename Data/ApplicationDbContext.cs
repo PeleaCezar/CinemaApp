@@ -54,7 +54,7 @@ namespace CinemaApp.Data
 
 
             modelBuilder.Entity<RunningTime>()
-            .HasKey(t => new { t.MovieID, t.CinemaHallId });
+            .HasKey(t => new { t.MovieID, t.CinemaHallId, t.StartDate });
 
             modelBuilder.Entity<RunningTime>()
                 .HasOne(pt => pt.Movie)
@@ -140,6 +140,12 @@ namespace CinemaApp.Data
                     ID = 89,
                     SeatNr = 89,
                     CinemaHallID = 1
+                      },
+                    new Seat
+                   {
+                    ID = 99,
+                    SeatNr = 99,
+                    CinemaHallID = 2
                       }
 
                 );

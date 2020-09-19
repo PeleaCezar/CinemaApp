@@ -1,27 +1,44 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CinemaApp.Data;
 using CinemaApp.Models;
 using CinemaApp.ViewModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace CinemaApp.Controllers
 {
     public class SeatsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<MyUser> _userManager;
 
-        public SeatsController (ApplicationDbContext context )
+        public SeatsController (ApplicationDbContext context,
+                                UserManager<MyUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
 
 
-        public async Task<IActionResult> ListOfSeats(int id, int cinemaHallId)
+        public async Task<IActionResult> ListOfSeats(int id, int cinemaRepartition,string StartDate)
         {
+
+            var movie = await _context.Movies.FirstOrDefaultAsync(p => p.ID == id);
+            var myDate = await _context.RunningTimes.Where(p=> p.MovieID == id).FirstOrDefaultAsync(p => p.StartDate == Convert.ToDateTime(StartDate));
+            var myCinema = await _context.RunningTimes.Where(p => p.MovieID == id).FirstOrDefaultAsync(p => p.CinemaHallId == cinemaRepartition);
+            if (movie == null || myDate == null || myCinema ==null)
+            {
+                return NotFound();
+            }
+
+ 
             var cinemaHall = new ViewModels.CinemaHall();
             cinemaHall.RightHall = new List<SeatsViewModel>();
             cinemaHall.LeftHall = new List<SeatsViewModel>();
@@ -55,27 +72,27 @@ namespace CinemaApp.Controllers
                 }
                 cinemaHall.RightHall.Add(seatsViewModel);
             }
-            var mvID = await _context.Movies.FirstOrDefaultAsync(p => p.ID == id);
-            cinemaHall.MovieName = mvID.Name;
-            cinemaHall.MovieID = mvID.ID;
-
+            cinemaHall.MovieName = movie.Name;
+            cinemaHall.MovieID = movie.ID;
+            cinemaHall.CinemaNo = cinemaRepartition;
             
 
+            ////seat reservation
+            //var movieID = await  _context.RunningTimes.FirstOrDefaultAsync(m => m.MovieID == id); 
+            //// voi schimba sa vina ora si sala de cinema din metoda de corespunzatoare butonului de rezervare
+            //var cinemaIDs = movieID.CinemaHallId; //voi inlocui cu sala de Cinema venita din metoda de Rezervare
 
-            //seat reservation
-            var movieID = await  _context.RunningTimes.FirstOrDefaultAsync(m => m.MovieID == id); 
-            // voi schimba sa vina ora si sala de cinema din metoda de corespunzatoare butonului de rezervare
-            var cinemaIDs = movieID.CinemaHallId; //voi inlocui cu sala de Cinema venita din metoda de Rezervare
-            var date = movieID.StartDate.ToString("F"); // voi schimba cu data pe care el o selecteaza pe client
+            var dates = Convert.ToDateTime(StartDate); //convert to DateTime
+            var date = dates.ToString("f"); //change the format
             cinemaHall.Date = date;
-            var reservations = await _context.Reservations.Where(r => r.MovieID == id && r.CinemaHallID == cinemaIDs).ToListAsync();
+            var reservations = await _context.Reservations.Where(r => r.MovieID == id && r.CinemaHallID == cinemaRepartition && r.ReservedDate == dates).ToListAsync();
             if (reservations.Count > 0)
             {
-                await FillSeatsStatus(cinemaHall, cinemaIDs, reservations);
+                await FillSeatsStatus(cinemaHall, cinemaRepartition, reservations);
             }
             else
-            {   var seatModel = new SeatModel();
-                
+            {   
+                 
                 foreach(var seatViewModel in cinemaHall.RightHall )
                 {
                     foreach( var seat in seatViewModel.Seats)
@@ -94,13 +111,13 @@ namespace CinemaApp.Controllers
             return View(cinemaHall);
         }
 
-        public async Task FillSeatsStatus(ViewModels.CinemaHall cinemaHall, int cinemaIDs, List<Reservation> reservations)
+        public async Task FillSeatsStatus(ViewModels.CinemaHall cinemaHall, int cinemaRepartition, List<Reservation> reservations)
         {
             foreach (var seatViewModel in cinemaHall.RightHall)
             {
                 foreach (var seat in seatViewModel.Seats)
                 {
-                    var seatFromDb = await _context.Seats.FirstOrDefaultAsync(s => s.SeatNr == seat.SeatNr && s.CinemaHallID == cinemaIDs);
+                    var seatFromDb = await _context.Seats.FirstOrDefaultAsync(s => s.SeatNr == seat.SeatNr && s.CinemaHallID == cinemaRepartition);
                     foreach (var reservation in reservations)
                     {
                         var seatReservation = await _context.SeatReservations
@@ -110,8 +127,11 @@ namespace CinemaApp.Controllers
                             seat.Status = "Rezervat";
                         }
                         else
-                        {
-                            seat.Status = "Liber";
+                        { 
+                            if(seat.Status !="Rezervat")
+                            {
+                                seat.Status = "Liber";
+                            }                            
                         }
                     }
                 }
@@ -120,8 +140,8 @@ namespace CinemaApp.Controllers
             foreach (var seatViewModel in cinemaHall.LeftHall)
             {
                 foreach (var seat in seatViewModel.Seats)
-                {
-                    var seatFromDb = await _context.Seats.FirstOrDefaultAsync(s => s.SeatNr == seat.SeatNr && s.CinemaHallID == cinemaIDs);
+                { 
+                    var seatFromDb = await _context.Seats.FirstOrDefaultAsync(s => s.SeatNr == seat.SeatNr && s.CinemaHallID == cinemaRepartition);
                     foreach (var reservation in reservations)
                     {
                         var seatReservation = await _context.SeatReservations
@@ -132,7 +152,11 @@ namespace CinemaApp.Controllers
                         }
                         else
                         {
-                            seat.Status = "Liber";
+                            if (seat.Status != "Rezervat")
+                            {
+                                seat.Status = "Liber";
+                            }
+                                
                         }
                     }
                 }
@@ -140,22 +164,40 @@ namespace CinemaApp.Controllers
         }
 
 
-        public async  Task<IActionResult> GetSeatStatus(int seatNr)
+       public async Task<IActionResult>CreateReservation (string jsonResult)
         {
-            var seatReserved = await _context.SeatReservations.Where(p => p.SeatID == seatNr).Select(p => p.ReservationID).ToListAsync();
+            var myCleanJsonObject = JObject.Parse(jsonResult).ToString();
 
-            var SeatModel = new SeatModel();
+            var reservation = JsonConvert.DeserializeObject<ReservationViewModel>(myCleanJsonObject);
 
-            if (seatReserved == null)
+            var reservationDb = new Reservation();
+            reservationDb.ReservedDate = Convert.ToDateTime(reservation.MovieDate);
+            reservationDb.MovieID = int.Parse(reservation.MovieID);
+            var userId = _userManager.GetUserId(HttpContext.User);
+            reservationDb.MyUserID = userId;
+            reservationDb.CinemaHallID = int.Parse(reservation.Cinema);
+            //var movieID = await _context.RunningTimes.FirstOrDefaultAsync(m => m.MovieID == reservationDb.MovieID); //temporar pana voi obtine  sala de pe client
+            //var cinemaID = movieID.CinemaHallId;// temporar
+            //reservationDb.CinemaHallID = cinemaID;
+
+            _context.Add(reservationDb);
+            await _context.SaveChangesAsync();
+
+            if (reservation.SeatReserved.Count > 0)
             {
+                foreach (var seat in reservation.SeatReserved)
+                {
+                    var seatFromDb = await _context.Seats.FirstOrDefaultAsync(p => p.SeatNr == seat && p.CinemaHallID == reservationDb.CinemaHallID); 
+                    SeatReservation seatReservation = new SeatReservation();
+                    seatReservation.SeatID = seatFromDb.ID;
+                    seatReservation.ReservationID = reservationDb.ID;
+                    _context.SeatReservations.Add(seatReservation);
+                }
+            }
+            await _context.SaveChangesAsync();
+            return Json(new { success = true, message = "Rezervarea a fost creata cu succes" });
 
-                SeatModel.Status = "Liber";               
-            }
-            else
-            {
-                SeatModel.Status = "Ocupat";            
-            }
-            return Json(new { success = true, status = SeatModel.Status});
+
         }
 
     }

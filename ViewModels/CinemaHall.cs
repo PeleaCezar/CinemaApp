@@ -15,5 +15,6 @@ namespace CinemaApp.ViewModels
         public string MovieName {get;set;}
         public string Date { get; set; }
         public int MovieID { get; set; }
+        public int CinemaNo { get; set; }
     }
 }

@@ -11,8 +11,6 @@ namespace CinemaApp.Models
 
         public string Description { get; set; }
 
-        public DateTime DateRunning{ get; set; }
-
         public DateTime ReleaseDate { get; set; }
 
         public decimal Duration { get; set; }

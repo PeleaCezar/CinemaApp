@@ -11,6 +11,8 @@ using CinemaApp.ViewModels;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore.Internal;
+using MoreLinq;
 
 namespace CinemaApp.Controllers
 {
@@ -37,7 +39,6 @@ namespace CinemaApp.Controllers
                 movietomodel.Name = movie.Name;
                 movietomodel.MovieID = movie.ID;
                 movietomodel.Description = movie.Description;
-                movietomodel.DateAdded = movie.DateRunning;
                 movietomodel.ReleaseDate = movie.ReleaseDate;
                 movietomodel.Movie = movie;
                 model.Add(movietomodel);
@@ -55,24 +56,120 @@ namespace CinemaApp.Controllers
             List<MovieGenreViewModel> listWithMovie = new List<MovieGenreViewModel>();
             var model = new MovieGenreViewModel();
             var movie = await _context.Movies.FirstOrDefaultAsync(m => m.ID == id);
+            if (movie == null)
+            {
+                Response.StatusCode = 404;
+                return View("MovieNotFound");
+            }
             model.MovieID = movie.ID;
             model.Name = movie.Name;
             model.Movie = movie;
             model.Description = movie.Description;
             model.ReleaseDate = movie.ReleaseDate;
-            model.DateAdded = movie.DateRunning;
+            model.Duration = (movie.Duration).ToString("G29"); ;
 
             model.GenreNames = new List<string>();
             var genres = await _context.MovieGenres.Where(u => u.MovieID == movie.ID).ToListAsync();
-             foreach (var genre in genres )
+            foreach (var genre in genres)
             {
                 var genree = await _context.Genres.FirstOrDefaultAsync(p => p.Id == genre.GenreID);
                 model.GenreNames.Add(genree.Name);
             }
+
+            await FillDateOfBooking(model);
             listWithMovie.Add(model);
             return View(listWithMovie);
         }
 
+        public async Task FillDateOfBooking(MovieGenreViewModel model)
+        {
+            var bookings =   _context.RunningTimes.OrderBy(u => u.StartDate).Where(u => u.MovieID == model.MovieID).DistinctBy(u => u.StartDate);
+            model.AllBookings = new List<BookingModel>();
+
+            foreach (var booking in bookings)
+            {
+                var bookingModel = new BookingModel();
+
+                bookingModel.StartDate = Convert.ToString(booking.StartDate); //for routing
+                bookingModel.HourOfDay = booking.StartDate.ToString("HH:mm");
+
+                var dateWithWeek = booking.StartDate.DayOfWeek;
+                var dayOfWeek = Convert.ToString(dateWithWeek);
+
+                switch (dayOfWeek)
+                {
+                    case "Monday":
+                        bookingModel.DayOfWeek = "Lun";
+                        break;
+                    case "Tuesday":
+                        bookingModel.DayOfWeek = "Mar";
+                        break;
+                    case "Wednesday":
+                        bookingModel.DayOfWeek = "Mie";
+                        break;
+                    case "Thursday":
+                        bookingModel.DayOfWeek = "Joi";
+                        break;
+                    case "Friday":
+                        bookingModel.DayOfWeek = "Vin";
+                        break;
+                    case "Saturday":
+                        bookingModel.DayOfWeek = "Sâm";
+                        break;
+                    case "Sunday":
+                        bookingModel.DayOfWeek = "Dum";
+                        break;
+                    default:
+                        break;
+                }
+
+                bookingModel.DayOfMonth = booking.StartDate.Day;
+                var mounthOfYear = booking.StartDate.Month;
+
+                switch (mounthOfYear)
+                {
+                    case 1:
+                        bookingModel.MonthOfYear = "Ian";
+                        break;
+                    case 2:
+                        bookingModel.MonthOfYear = "Feb";
+                        break;
+                    case 3:
+                        bookingModel.MonthOfYear = "Mar";
+                        break;
+                    case 4:
+                        bookingModel.MonthOfYear = "Apr";
+                        break;
+                    case 5:
+                        bookingModel.MonthOfYear = "Mai";
+                        break;
+                    case 6:
+                        bookingModel.MonthOfYear = "Iun";
+                        break;
+                    case 7:
+                        bookingModel.MonthOfYear = "Iul";
+                        break;
+                    case 8:
+                        bookingModel.MonthOfYear = "Aug";
+                        break;
+                    case 9:
+                        bookingModel.MonthOfYear = "Sept";
+                        break;
+                    case 10:
+                        bookingModel.MonthOfYear = "Oct";
+                        break;
+                    case 11:
+                        bookingModel.MonthOfYear = "Nov";
+                        break;
+                    case 12:
+                        bookingModel.MonthOfYear = "Dec";
+                        break;
+                    default:
+                        break;
+                }
+                model.AllBookings.Add(bookingModel);
+            }           
+        }
 
         // GET: Movies/Create
         [Authorize(Roles = "Administrator")]
@@ -114,10 +211,9 @@ namespace CinemaApp.Controllers
                 var movie = new Movie();
                 movie.Name = viewModel.Name;
                 movie.Description = viewModel.Description;
-                movie.DateRunning = viewModel.DateAdded;
                 movie.ReleaseDate = viewModel.ReleaseDate;
                 movie.PhotoPath = uniqueFileName;
-                movie.Duration = viewModel.Duration;
+                movie.Duration = Convert.ToDecimal(viewModel.Duration);
                 _context.Add(movie);
                 await _context.SaveChangesAsync();
                 if (viewModel.GenreNames.Count > 0)
@@ -153,9 +249,8 @@ namespace CinemaApp.Controllers
             movieModel.MovieID = movie.ID;
             movieModel.Name = movie.Name;
             movieModel.Description = movie.Description;
-            movieModel.DateAdded = movie.DateRunning;
             movieModel.ReleaseDate = movie.ReleaseDate;
-            movieModel.Duration = movie.Duration;
+            movieModel.Duration = (movie.Duration).ToString("G29"); ;
 
             var genres = new List<string>();
             await FillGenreFromMovie(genres); // pentru  selectare itemelor din drop-down
@@ -192,10 +287,9 @@ namespace CinemaApp.Controllers
 
             movie.Name = movieModel.Name;
             movie.Description = movieModel.Description;
-            movie.DateRunning = movieModel.DateAdded;
             movie.ReleaseDate = movieModel.ReleaseDate;
             movie.PhotoPath = uniqueFileName;
-            movie.Duration = movieModel.Duration;
+            movie.Duration = Convert.ToDecimal(movieModel.Duration);
             _context.Update(movie);
 
             var movieWithgenres = await _context.MovieGenres.Include(prop => prop.Genre).Where(m => m.MovieID == id).ToListAsync();
@@ -263,10 +357,7 @@ namespace CinemaApp.Controllers
             movieModel.MovieID = movie.ID;
             movieModel.Name = movie.Name;
             movieModel.Description = movie.Description;
-            movieModel.DateAdded = movie.DateRunning;
             movieModel.ReleaseDate = movie.ReleaseDate;
-
-
 
 
             return View(movieModel);

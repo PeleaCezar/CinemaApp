@@ -14,6 +14,5 @@ namespace CinemaApp.ViewModels
 
         public string EndDate { get; set; }
 
-       // public DataTableViewModel DataTable { get; set; }
     }
 }

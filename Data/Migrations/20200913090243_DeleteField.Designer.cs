@@ -4,14 +4,16 @@ using CinemaApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CinemaApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200913090243_DeleteField")]
+    partial class DeleteField
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -202,13 +204,13 @@ namespace CinemaApp.Data.Migrations
                     b.Property<int>("CinemaHallId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("MovieID", "CinemaHallId", "StartDate");
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("MovieID", "CinemaHallId");
 
                     b.HasIndex("CinemaHallId");
 
@@ -306,12 +308,6 @@ namespace CinemaApp.Data.Migrations
                             ID = 89,
                             CinemaHallID = 1,
                             SeatNr = 89
-                        },
-                        new
-                        {
-                            ID = 99,
-                            CinemaHallID = 2,
-                            SeatNr = 99
                         });
                 });
 

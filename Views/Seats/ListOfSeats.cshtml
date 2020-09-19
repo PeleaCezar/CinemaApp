@@ -23,10 +23,10 @@
                                 <div class="text-center" data-id="@seats.SeatNr">@seats.SeatNr</div>
                             </div>
                         }
-                        else if (seats.Status == "Ocupat")
+                        else if (seats.Status == "Rezervat")
                         {
                             <div class="seat active" style="pointer-events: none">
-                                <div class="text-center" data-id="@seats.SeatNr"><span>@seats.SeatNr (R)</span></div>
+                                <div class="text-center" data-id="@seats.SeatNr"><span>(R)</span></div>
                             </div>
                         }
                     }
@@ -48,10 +48,10 @@
                                 <div class="text-center" data-id="@seats.SeatNr">@seats.SeatNr</div>
                             </div>
                         }
-                        else if (seats.Status == "Ocupat")
+                        else if (seats.Status == "Rezervat")
                         {
                             <div class="seat active" style="pointer-events: none">
-                                <div class="text-center" data-id="@seats.SeatNr"><span>@seats.SeatNr (R)</span></div>
+                                <div class="text-center" data-id="@seats.SeatNr"><span>(R)</span></div>
                             </div>
                         }
 
@@ -67,30 +67,68 @@
     <!-- Modal Confirmation-->
     <div class="modal fade" id="modalConfirm" tabindex="-1" role="dialog" aria-labelledby="modalConfirmTitle" aria-hidden="true">
 
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-dialog-centered " role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <label class="modal-title"> Confirmare rezervare</label>
+                    <h5 class="modal-title"> Confirmare rezervare</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
 
-                <div id="reservedRole" class="">
-                    <div class="modal-body">
-                        <label for="nameActualRole" style="text-align:center">Selectati un rol:</label>
-                        <select class="form-control col-lg-6" id="nameActualRole" style="text-align:center">
-                            <option hidden>Roluri</option>
-                            <option>Administrator</option>
-                            <option>Angajat</option>
-                            <option>Client</option>
-                        </select>
-                    </div>
-                    <div class="modal-footer justify-content-between">
-                        <button type="button" class="btn btn-light text-left">Inapoi</button>
-                        <div class="text-right">
-                            <button type="button" class="btn btn-primary btnSave" id="save-button" data-dismiss="modal">Confirma</button>
+                <div class="modal-body">
+                    <div class="p-2">
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <h6 for="movieDisplay">Numele filmului</h6>
+                                    <input disabled class="form-control" id="movieDisplay" style="text-align:center;border: 1px solid #888;">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <h6 for="dateDisplay">Data filmului</h6>
+                                    <input disabled class="form-control" id="dateDisplay" style="text-align:center;border: 1px solid #888;">
+                                </div>
+                            </div>
+                            
+
                         </div>
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <h6 for="seatsDisplay">Scaune</h6>
+                                    <textarea disabled class="form-control" id="seatsDisplay" style="text-align:center;border: 1px solid #888; resize:none;"></textarea>
+                                </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-4">
+                                        <h6 for="cinemaDisplay">Sala</h6>
+                                        <input disabled class="form-control" id="cinemaDisplay" style="text-align:center;border: 1px solid #888;">
+                                    </div>
+                                </div>
+                            </div>
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <h6 for="ticketDisplay">Numar Bilete</h6>
+                                    <input disabled class="form-control" id="ticketDisplay" style="text-align:center;border: 1px solid #888; ">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <h6 for="totalDisplay">Cost</h6>
+                                    <input disabled class="form-control" id="totalDisplay" style="text-align:center;border: 1px solid #888;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-light text-left">Inapoi</button>
+                    <div class="text-right">
+                        <button type="button" class="btn btn-primary btnSave" id="confirm-button" data-dismiss="modal">Confirma</button>
                     </div>
                 </div>
 
@@ -100,8 +138,20 @@
 
     <div class="reserve">
         <div class=" card-body reservation">
-            <p> <strong> Film :</strong> @Model.MovieName</p>
-            <p> <strong> Data : </strong> <span>@Model.Date</span></p>
+            <p> <strong> Film :</strong> <span id="name">@Model.MovieName</span> </p>
+            <p> <strong> Data : </strong> <span id="date">@Model.Date</span></p>
+            <p> <strong> Sala de Cinema : </strong> <span id="cinema">@Model.CinemaNo</span></p>
+
+            <p>
+                <strong> Legenda : </strong>
+                <div class="row">
+                    <div class="oneSeat"><span class="descriptionSeat"> Liber</span></div>
+                    <div class="secondSeat active"> <span class="descriptionSeat"> Selectat</span></div>
+                    <div class="thirdSeat active"> <span class="descriptionSeat"> Rezervat </span></div>
+                </div>
+
+            </p>
+
             <p> <strong> Scaun : </strong> </p>
 
             <ul id="selected-seats"></ul>
@@ -110,7 +160,9 @@
             <div class="confirm-form">
                 <button class="btn-light btnReserved" data-id="@Model.MovieID">Confirmare</button>
             </div>
-            <div id="legend"> legenda</div>
+
+
+
         </div>
         <div style="clear:both"></div>
     </div>
@@ -120,8 +172,69 @@
 
 
 
-
 <style>
+    /* Seat legend -----------------*/
+    .row {
+        margin-top:30px;
+    }
+    /*--first seat --*/
+    .oneSeat {
+        margin-left:15px;
+        width: 30px;
+        height: 40px;
+        border-radius: 7px;
+        background: linear-gradient(to top, #761818, #761818, #761818, #761818, #761818, #B54041, #F3686A);
+        margin-bottom: 5px;
+        margin-top: -15px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    }
+    .descriptionSeat {
+      position:relative; left:50px; bottom:-5px;
+    }
+    /*---second Seat*/
+    .secondSeat {
+        margin-left:75px;
+        width: 30px;
+        height: 40px;
+        border-radius: 7px;
+        background: linear-gradient(to top, #761818, #761818, #761818, #761818, #761818, #B54041, #F3686A);
+        margin-bottom: 5px;
+        margin-top: -15px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    }
+    .secondSeat.active:before {
+        content: '';
+        position: absolute;
+        width: 30px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 7px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    }
+    /*---Third Seat*/
+    .thirdSeat {
+        margin-left: 100px;
+        width: 30px;
+        height: 40px;
+        border-radius: 7px;
+        background: linear-gradient(to top, #761818, #761818, #761818, #761818, #761818, #B54041, #F3686A);
+        margin-bottom: 5px;
+        margin-top: -15px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    }
+
+        .thirdSeat.active:before {
+            content: '(R)';
+            text-align: center;
+            position: absolute;
+            width: 30px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 7px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            color: #f1c6c7;
+        }
+        /*end seats*/
     .screen {
         position: absolute;
         bottom: 0;
@@ -129,13 +242,13 @@
         background: #f8f9fa;
         border-color: #f8f9fa;
         color: #212529 !important;
-        margin-bottom: 230px;
+        margin-bottom: 237px;
         box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
         margin-left: 15px;
         margin-right: 15px;
         border-radius: 5px;
     }
-    
+
 
 
     /* Reservation panel -----------------*/
@@ -153,18 +266,23 @@
             margin-bottom: 1.5rem;
             margin-top: revert;
         }
-    /* azure aliceblue ivory */
+
     #selected-seats {
-        max-height: 150px;
+        max-height: 100px;
+        width: 120px;
+        background: #f7f7f7;
+        font-size: 15px;
+        font-weight: bold;
+        text-align: center;
         overflow-y: auto;
-        width: 200px;
-        color: ivory;
+        padding-left: 0.5px;
     }
-    /*#selected-seats li{float:left; width:72px; height:26px; line-height:26px; border:1px solid #d3d3d3; background:#f7f7f7; margin:6px; font-size:14px; font-weight:bold; text-align:center}*/
+
 
     /*---finish */
     body {
         background: #c6cace;
+        color: #687078 !important;
     }
 
     .theatre {
@@ -251,6 +369,26 @@
     .title {
         color: #2517174f;
     }
+
+    /* modal*/
+    .p-2 {
+        padding: .75rem !important;
+        white-space: normal;
+    }
+
+
+.modal-dialog {
+    max-width: 540px;
+    margin: 1.75rem auto;
+}
+    .form-row > .col, .form-row > [class*=col-] {
+         padding-right: 15px; 
+         padding-left: 15px; 
+    }
+    .form-control:disabled, .form-control[readonly] {
+        background-color: #e3e5e7;
+        opacity: 1;
+    }
 </style>
 
 
@@ -258,6 +396,7 @@
     $(document).ready(function () {
         $(".confirm-form *").prop("disabled", true);
         let count = 0;
+        
 
         $('.cinema-seats .seat').on('click', function (e) {
             e.preventDefault();
@@ -279,6 +418,7 @@
                 count++;
                 $('#counter').empty().append(count);
                 $total.text(recalculateTotal(count, price));
+
             }
 
 
@@ -312,11 +452,56 @@
 
 
     $('button.btnReserved').on('click', function (e) {
-        debugger;
+
         e.preventDefault();
         var movieID = $(this).closest('button').data('id');
         $('#modalConfirm').data('id', movieID).modal('show');
+    
+        var name = document.getElementById("name").innerText;
+        $("#movieDisplay").val(name);
+        var date = document.getElementById("date").innerText;
+        $("#dateDisplay").val(date);
+        var noOfTicket = document.getElementById("counter").innerText;
+        $("#ticketDisplay").val(noOfTicket);
+        var price = document.getElementById("total").innerText;
+        $("#totalDisplay").val(price);
+        var cinema = document.getElementById("cinema").innerText;
+        $("#cinemaDisplay").val(cinema);
+        var seatReserved = document.getElementById("selected-seats").innerText;
+        $("#seatsDisplay").val(seatReserved);
         debugger;
+        
+
     })
 
+    $("#confirm-button").on("click", function () {
+        var movieID = $('#modalConfirm').data('id');
+        var date = $("#dateDisplay").val();
+        var cinema = $("#cinemaDisplay").val();
+        var seatReserved = $("#seatsDisplay").val();
+
+
+        var reservation = {};
+        reservation.movieDate = date;
+        var stringWithoutSpaces =seatReserved.replace(/\s/g, ''); // delete  wrong spaces from my string
+        var seat = stringWithoutSpaces.match(/\d+/g); // get a numbers from seat and move them in the array
+        reservation.seatReserved = seat;
+        reservation.movieID = movieID;
+        reservation.cinema = cinema;
+        var reservation = JSON.stringify(reservation);
+        $.ajax({
+            type: 'POST',
+            data: { jsonResult: reservation },
+            url: '/Seats/CreateReservation',
+            dataType: "text",
+            success: function (data) {
+                window.location.reload();
+            }
+        });
+
+    });
+
+
 </script>
+
+@*//foreach scaun  ce vine de pe client... in baza de date din scaune ... adaugam scaunul in seat reservation*@

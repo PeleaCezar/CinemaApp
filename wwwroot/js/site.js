@@ -6,9 +6,7 @@ function GAPI_Load() {
 }
 function searchMovie(movieName) {
     var qSearch = movieName + " trailer";
-    debugger;
     gapi.client.load('youtube', 'v3', function () {
-        debugger;
         var request = gapi.client.youtube.search.list({
             q: qSearch,
             part: 'snippet',
@@ -19,7 +17,6 @@ function searchMovie(movieName) {
             var str = JSON.stringify(response.result);
             var trailerId = response.items[0].id.videoId;
             showVideo(trailerId);
-            debugger;
         });
     });
 }

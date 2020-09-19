@@ -28,6 +28,8 @@
     <Compile Remove="Data\Migrations\20200830201005_AddSeat.Designer.cs" />
     <Compile Remove="Data\Migrations\20200830212437_SeedSeatTen.cs" />
     <Compile Remove="Data\Migrations\20200830212437_SeedSeatTen.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200916171347_SeatNRs.cs" />
+    <Compile Remove="Data\Migrations\20200916171347_SeatNRs.Designer.cs" />
   </ItemGroup>
 
 
@@ -40,6 +42,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.3" />
+    <PackageReference Include="morelinq" Version="3.3.2" />
   </ItemGroup>
 
 

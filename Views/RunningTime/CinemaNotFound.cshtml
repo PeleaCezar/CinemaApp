@@ -1,0 +1,16 @@
+﻿@model int 
+
+@{
+    ViewBag.Title = "404 Error";
+}
+
+<div class="alert alert-danger mt-1 mb-1">
+    <h4> Nu mai exista locuri disponibile</h4>
+    <hr />
+    <h5>
+        Ne pare rau , dar locurile s-au epuizat . Incercati o alta ora.
+    </h5>
+</div>
+<a asp-action="Details" asp-controller="Movies" asp-route-id="@Model" class="btn btn-outline-success">
+    Inapoi la programul orar
+</a>

@@ -7,7 +7,6 @@
 
 <div>
 
-
     <table class="table">
         <thead>
             <tr>
@@ -72,6 +71,7 @@
     a:hover {
         color: black;
     }
+
     body {
         background-color: white;
         padding-bottom: 20px;
@@ -81,8 +81,88 @@
         color: black;
         font-weight: 500;
     }
+
     .h3 {
         margin: 20px 0 !important;
         font-weight: 500 !important;
     }
 </style>
+
+
+
+
+
+@*<header>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    </header>
+
+
+
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link text-dark btnCreateRunTime">Adauga interval orar</a>
+        </li>
+
+    </ul>
+
+
+    <div class="navbar-nav">
+        <div class="modal fade task-modal-content show" id="CreateRunTime" tabindex="-1" role="dialog" aria-labelledby="CreateRunTimeTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="CreateRunTimeTitle">Adauga un nou interval orar</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="p-2">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Aloca pe</label>
+                                        <select class="form-control form-control-light"  id="task-employee">
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="example-number-input">Numar de ore necesare</label>
+                                        <input class="form-control form-control-light" type="number" id="numberOfHours-edit">
+                                    </div>
+                                    <div class="text-right">
+                                        <button type="button" class="btn btn-light" data-dismiss="modal">Inapoi</button>
+                                        <button type="button" class="btn btn-primary" id="save-button" data-dismiss="modal">Salveaza modificari</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        $('a.btnCreateRunTime').on('click', function (e) {
+            e.preventDefault();
+            $('#CreateRunTime').modal('show');
+            $.ajax({
+                type: 'GET',
+                url: `/RunningTime/AddMovieRunTime`,
+                async: false,
+                cache: false,
+                timeout: 5000,
+                error: function () {
+                    return true;
+                },
+                success: function (data) {
+                    response = data.data;
+                }
+            });
+
+        })
+    </script>*@
