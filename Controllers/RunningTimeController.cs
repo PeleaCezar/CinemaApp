@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using CinemaApp.Data;
 using CinemaApp.Models;
@@ -9,6 +10,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace CinemaApp.Controllers
 {
@@ -24,41 +27,130 @@ namespace CinemaApp.Controllers
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> ViewRanTimeMovie()
         {
-            var applicationDbContext = await _context.RunningTimes.ToListAsync();
+            var applicationDbContext = await _context.RunningTimes.OrderBy(p=>p.StartDate).ToListAsync();
             List<RunningTimeViewModel> model = new List<RunningTimeViewModel>();
             foreach (var movie in applicationDbContext)
             {
                 var movieToModel = new RunningTimeViewModel();
-                var movieID = await _context.Movies.FirstOrDefaultAsync(p => p.ID == movie.MovieID);
-                movieToModel.MovieName = movieID.Name;
-                movieToModel.MovieID = movieID.ID;
-                var cinemaID = await _context.CinemaHalls.FirstOrDefaultAsync(p => p.ID == movie.CinemaHallId);
-                movieToModel.CinemaName = cinemaID.CinemaName;
+                var movieFromDb = await _context.Movies.FirstOrDefaultAsync(p => p.ID == movie.MovieID);
+                movieToModel.MovieName = movieFromDb.Name;
+                movieToModel.MovieID = movieFromDb.ID;
+                var cinemaFromDb = await _context.CinemaHalls.FirstOrDefaultAsync(p => p.ID == movie.CinemaHallId);
+                movieToModel.CinemaName = cinemaFromDb.CinemaName;
+                movieToModel.CinemaID = cinemaFromDb.ID;
+
 
                 var firstDate = movie.StartDate.ToString("F");
                 movieToModel.StartDate = firstDate;
 
                 var secondDate = movie.EndDate.ToString("F");
                 movieToModel.EndDate = secondDate;
-                ViewData["MovieProgram"] = _context.RunningTimes.Select(p => p.MovieID).Count();
 
                 model.Add(movieToModel);
             }
+
+            ViewData["MovieNumber"] = _context.RunningTimes.Select(p => p.MovieID).Count();
+            ViewData["MovieName"] = new SelectList(_context.Set<Movie>(), "Name", "Name");
+            ViewData["CinemaHalls"] = new SelectList(_context.Set<Models.CinemaHall>(), "CinemaName", "CinemaName");
             return View(model);
         }
 
-
-
-        //GET
-        public IActionResult AddMovieRunTime()
+        public async Task<IActionResult> AddMovieRunTime(string jsonResult)
         {
-            ViewData["CinemaName"] = new SelectList(_context.Set<RunningTime>(), "CinemaName", "CinemaName");
-            ViewData["MovieName"] = new SelectList(_context.Set<Models.CinemaHall>(), "CinemaName", "CinemaName");
-            return View();
+            var myCleanJsonObject = JObject.Parse(jsonResult).ToString();
+            var reservation = JsonConvert.DeserializeObject<RunningTimeViewModel>(myCleanJsonObject);
+
+            var cinema = await _context.CinemaHalls.FirstOrDefaultAsync(p => p.CinemaName.Equals(reservation.CinemaName));
+            var movie = await _context.Movies.FirstOrDefaultAsync(p => p.Name.Equals(reservation.MovieName));
+            
+            var cinemaHalls = await _context.CinemaHalls.ToListAsync();
+            foreach (var cinemaHall in cinemaHalls)
+            {
+                var runTime = await _context.RunningTimes.FirstOrDefaultAsync(p => p.CinemaHallId == cinema.ID && p.MovieID == movie.ID 
+                && p.StartDate < (Convert.ToDateTime(reservation.EndDate)) && p.EndDate > (Convert.ToDateTime(reservation.StartDate))); //(StartA <= EndB) and (EndA >= StartB)
+
+
+                if (runTime == null)
+                {
+                    var runningTime = new RunningTime();
+                    runningTime.StartDate = Convert.ToDateTime(reservation.StartDate);
+                    runningTime.EndDate = Convert.ToDateTime(reservation.EndDate);
+                    runningTime.CinemaHallId = cinema.ID;
+                    runningTime.MovieID = movie.ID;
+                    _context.Add(runningTime);
+                    await _context.SaveChangesAsync();
+
+                }
+
+            }
+
+            return Json(new { success = true, message = "A fost adaugat un nou interval orar" });
+
+        }
+        [HttpGet]
+        public async Task<IActionResult> EditMovieRunTime(int id,int content,string dateStart)
+        {
+            if ( id == 0 || dateStart == null || content == 0)
+            {
+                return Json(new { error = true, message = "Editarea nu se poate efectua !" });
+            }
+            var runningTimes = await _context.RunningTimes.FirstOrDefaultAsync(e => e.MovieID == id && e.StartDate == Convert.ToDateTime(dateStart) && e.CinemaHallId == content);
+             if(runningTimes == null)
+            {
+                return Json(new { error = true, message = "Editarea nu se poate efectua !" });
+            }
+            else
+            {
+                var viewModel = new RunningTimeViewModel();
+                var cinema = await _context.CinemaHalls.FirstOrDefaultAsync(p => p.ID.Equals(runningTimes.CinemaHallId));
+                var movie = await _context.Movies.FirstOrDefaultAsync(p => p.ID.Equals(runningTimes.MovieID));
+
+                viewModel.CinemaName = cinema.CinemaName;
+                viewModel.MovieName = movie.Name;
+                viewModel.StartDate = runningTimes.StartDate.ToString("g").Replace('/','.');
+                viewModel.EndDate = runningTimes.EndDate.ToString("g").Replace('/', '.');
+
+                return Json(new { success = true, data = viewModel, message = "Datele au fost trimise catre client." });
+            
+            }
+            
+        }
+        //GET
+        public async Task<IActionResult> Delete(int id, int content, string dateStart)
+        {
+            if (id == 0 || dateStart == null || content == 0)
+            {
+                return Json(new { error = true, message = "Stergerea nu a putut fi efectuata !" });
+            }
+            var runningTime = await _context.RunningTimes.FirstOrDefaultAsync(p => p.MovieID == id && p.StartDate ==Convert.ToDateTime(dateStart) && p.CinemaHallId ==content);
+            if (runningTime == null)
+            {
+                return Json(new { error = true, message = "Stergerea nu a putut fi efectuata !" });
+            }
+            else
+            {
+                _context.RunningTimes.Remove(runningTime);
+                await _context.SaveChangesAsync();
+                if (!RunningTimeExists(id,content, dateStart))
+                {
+                    var reservations = await _context.Reservations.Where(p => p.MovieID == id && p.ReservedDate == Convert.ToDateTime(dateStart) && p.CinemaHallID == content).ToListAsync();
+
+                    foreach (Reservation reservation in reservations)
+                    {
+                        _context.Remove(reservation);
+                        await _context.SaveChangesAsync();
+                    }
+                }               
+                return Json(new { success = true, message = "Stergerea a fost efectuata cu succes !" });
+
+            }
+
         }
 
-
-
+        private bool RunningTimeExists(int movieId,int cinemaId,string dateStart )
+        {
+            return _context.RunningTimes.Any(p => p.MovieID == movieId && p.StartDate == Convert.ToDateTime(dateStart) && p.CinemaHallId == cinemaId);
+        }
 
         public async Task<IActionResult> VerifyCinemaHallandDate(int id,string StartDate,int cinemaRepartition)
         {
@@ -99,9 +191,7 @@ namespace CinemaApp.Controllers
                         break;
                     }
                                    
-            }
-            
-
+            }        
              if(cinemaRepartition == 0)
             {
                 return View("CinemaNotFound",id);

@@ -6,6 +6,8 @@ namespace CinemaApp.ViewModels
     {
         public int MovieID { get; set; }
 
+        public int CinemaID { get; set; }
+
         public string MovieName { get; set; }
 
         public string CinemaName { get; set; }

@@ -1,16 +1,30 @@
-﻿@model int 
+﻿@model int
 
 @{
-    ViewBag.Title = "404 Error";
+    ViewBag.Title = "Locuri indisponibile ";
 }
 
-<div class="alert alert-danger mt-1 mb-1">
-    <h4> Nu mai exista locuri disponibile</h4>
-    <hr />
-    <h5>
-        Ne pare rau , dar locurile s-au epuizat . Incercati o alta ora.
-    </h5>
-</div>
-<a asp-action="Details" asp-controller="Movies" asp-route-id="@Model" class="btn btn-outline-success">
-    Inapoi la programul orar
-</a>
+<section class="text-center">
+    <h2 class="full-room"> Locuri indisponibile</h2>
+    <p class="full-room-p"> Ne pare rau, dar pentru intervalul orar selectat nu mai sunt locuri disponibile. </p>
+    <a asp-action="Details" asp-controller="Movies" asp-route-id="@Model" class="btn btn-light text-center">
+        Inapoi la programul orar
+    </a>
+</section>
+
+<style>
+    p {
+        margin-top: 0.5rem;
+        margin-bottom: 1rem;
+        letter-spacing: 0.05em;
+    }
+    body {
+        color: #505355;
+        font-family: Nunito,sans-serif;
+    }
+    .btn-light {
+        color: #212529;
+        background-color: #f8f9fa;
+        border-color: #999b9d;
+    }
+</style>

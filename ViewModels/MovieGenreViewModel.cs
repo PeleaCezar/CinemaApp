@@ -23,6 +23,8 @@ namespace CinemaApp.ViewModels
 
         public Movie Movie { get; set; }
 
+        public string dateRelease { get; set; }
+
         //Fields for Genre
         public List<string> GenreNames {get; set; }
 

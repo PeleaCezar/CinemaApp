@@ -39,7 +39,8 @@ namespace CinemaApp.Controllers
                 movietomodel.Name = movie.Name;
                 movietomodel.MovieID = movie.ID;
                 movietomodel.Description = movie.Description;
-                movietomodel.ReleaseDate = movie.ReleaseDate;
+                var date = movie.ReleaseDate.ToString("D");
+                movietomodel.dateRelease = date;
                 movietomodel.Movie = movie;
                 model.Add(movietomodel);
             }

@@ -2,72 +2,194 @@
 @{
     ViewData["Title"] = "Program filme";
 }
+<!DOCTYPE html>
+<html>
 
-<h3>@ViewData["Title"] <small> (@ViewBag.MovieProgram)</small></h3>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment-with-locales.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
+    <script src="https://rawgit.com/tempusdominus/bootstrap-4/master/build/js/tempusdominus-bootstrap-4.js" defer></script>
+    <link href="https://rawgit.com/tempusdominus/bootstrap-4/master/build/css/tempusdominus-bootstrap-4.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th class=" d-none d-table-cell p-3">
-                    Nume Film
-                </th>
-                <th class="d-none d-md-table-cell p-3">
-                    Sala
-                </th>
-                <th class="d-none d-md-table-cell p-3">
-                    Ora de inceput
-                </th>
-                <th class="d-none d-md-table-cell p-3">
-                    Ora de sfarsit
-                </th>
-                <th width="116"></th>
-            </tr>
-        </thead>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
-        <tbody>
-            @foreach (var movie in Model)
-            {
+</head>
+
+<body>
+    <div class=" d-flex mb-4">
+        <h3>@ViewData["Title"] <small> (@ViewBag.MovieNumber)</small></h3>
+        <a href="#" class="btn btn-primary ml-auto my-auto" data-toggle="modal" data-target="#CreareIntervalOrar"> Creaza interval</a>
+    </div>
+    <div>
+
+        <table class="table">
+            <thead>
                 <tr>
-                    <td class="d-table-cell align-middle">
-                        <a asp-controller="Movies" asp-action="Details" asp-route-id="@movie.MovieID" class="custom-link">
-                            @Html.DisplayFor(x => movie.MovieName)
-                        </a>
-                    </td>
-
-                    <td class=" d-none d-md-table-cell align-middle">
-                        @Html.DisplayFor(x => movie.CinemaName)
-                    </td>
-
-                    <td class=" d-none d-md-table-cell align-middle">
-                        @Html.DisplayFor(x => movie.StartDate)
-                    </td>
-
-                    <td class=" d-none d-md-table-cell align-middle">
-                        @Html.DisplayFor(x => movie.EndDate)
-                    </td>
-
-                    <td>
-                        <div class="d-flex">
-                            <a class="btn btn-primary ml-2" asp-controller="Person" asp-action="Edit" asp-route-id="@movie.MovieID"
-                               data-toggle="tooltip" data-html="true" title="Editare">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <a class="btn btn-primary ml-2" asp-controller="Person" asp-action="Delete" asp-route-id="@movie.MovieID"
-                               data-toggle="tooltip" data-html="true" title="Stergere">
-                                <i class="fas fa-trash"></i>
-                            </a>
-                        </div>
-                    </td>
+                    <th class=" d-none d-table-cell p-3">
+                        Nume Film
+                    </th>
+                    <th class="d-none d-md-table-cell p-3">
+                        Sala
+                    </th>
+                    <th class="d-none d-md-table-cell p-3">
+                        Ora de inceput
+                    </th>
+                    <th class="d-none d-md-table-cell p-3">
+                        Ora de sfarsit
+                    </th>
+                    <th width="116"></th>
                 </tr>
-            }
+            </thead>
 
-        </tbody>
-    </table>
-</div>
+            <tbody>
+                @foreach (var movie in Model)
+                {
+                    <tr>
+                        <td class="d-table-cell align-middle">
+                            <a asp-controller="Movies" asp-action="Details" asp-route-id="@movie.MovieID" class="custom-link">
+                                @Html.DisplayFor(x => movie.MovieName)
+                            </a>
+                        </td>
+
+                        <td class=" d-none d-md-table-cell align-middle">
+                            @Html.DisplayFor(x => movie.CinemaName)
+                        </td>
+
+                        <td class=" d-none d-md-table-cell align-middle">
+                            @Html.DisplayFor(x => movie.StartDate)
+                        </td>
+
+                        <td class=" d-none d-md-table-cell align-middle">
+                            @Html.DisplayFor(x => movie.EndDate)
+                        </td>
+
+                        <td>
+                            <div class="d-flex">
+                                <a class="btn btn-primary ml-2 btnEdit" data-id="@movie.MovieID" data-data="@movie.StartDate" data-content="@movie.CinemaID" href="#"
+                                   data-toggle="tooltip" data-html="true" title="Editare">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a class="btn btn-danger ml-2 btnDelete" data-id="@movie.MovieID" data-data="@movie.StartDate" data-content="@movie.CinemaID" href="#"
+                                   data-toggle="tooltip" data-html="true" title="Stergere">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+    <div class="modal fade task-modal-content show" id="CreareIntervalOrar" tabindex="-1" role="dialog" aria-labelledby="CreareIntervalOrarCenter" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="CreareIntervalOrarCenter">Creaza un nou interval orar</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="p-2">
+                        <div class="alert alert-error" id="alert" style="display:none;">
+                            <strong>Campurile nu se pot lasa necompletate.</strong>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label>Filmul</label>
+                                    <select class="form-control form-control-light" asp-items="ViewBag.MovieName" id="movie">
+                                        <option selected disabled> Selecteaza filmul </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label> Sala </label>
+                                    <select class="form-control form-control-light" asp-items="ViewBag.CinemaHalls" id="cinema">
+                                        <option selected disabled>Selecteaza sala </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Ora de inceput</label>
+                                    <div class="input-group date" id="start-date" data-target-input="nearest">
+                                        <input type="text" class="form-control datetimepicker-input" onkeydown="event.preventDefault()"  name="dateStart" data-target="#start-date" />
+                                        <span class="input-group-addon" data-target="#start-date" data-toggle="datetimepicker">
+                                            <span class="fa fa-calendar"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Ora de final</label>
+                                    <div class="input-group date" id="end-date" data-target-input="nearest">
+                                        <input type="text" class="form-control datetimepicker-input" onkeydown="event.preventDefault()"  name="endDate" data-target="#end-date" />
+                                        <span class="input-group-addon" data-target="#end-date" data-toggle="datetimepicker">
+                                            <span class="fa fa-calendar"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ml-auto">
+                                <button type="button" class="btn btn-light" data-dismiss="modal">Inapoi</button>
+                                <button type="button" class="btn btn-primary" id="add-button" data-dismiss="modal">Creaza</button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*Delete Modal*@
+    <div class="modal fade" id="DeleteModal" aria-labelledby="DeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <label class="modal-title"> Stergere interval orar</label>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-left">
+                    <p>Esti sigur ca doresti sa stergi acest interval orar?</p>
+                </div>
+                <form>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-light" data-dismiss="modal">Inapoi</button>
+                        <button type="submit" class="btn btn-danger" id="btnDeleteYes">Stergere</button>
+                    </div>
+                </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+</body>
+</html>
 
 <style>
+    .btn-primary.focus, .btn-primary:focus {
+        color: #fff;
+        background-color: #0275d8;
+        border-color: #0275d8;
+    }
+
     a:hover {
         color: black;
     }
@@ -86,83 +208,184 @@
         margin: 20px 0 !important;
         font-weight: 500 !important;
     }
+
+    .alert-danger, .alert-error {
+        color: #b94a48;
+        background-color: #f2dede;
+        border-color: #eed3d7;
+    }
+    a:focus, a:hover {
+        color: #fff;
+        text-decoration: underline;
+    }
 </style>
 
 
+<script type="text/javascript">
 
+    $(function () {
+        $('#start-date').datetimepicker({
+            minDate: new Date(),
+            useCurrent: false,
+            locale: 'ro',
+            ignoreReadonly: true,
 
+        });
 
-@*<header>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    </header>
+        $('#end-date').datetimepicker({
+            minDate: new Date(),
+            locale: 'ro',
+            useCurrent: false,
+            ignoreReadonly: true,
 
-
-
-    <ul class="navbar-nav">
-        <li class="nav-item">
-            <a class="nav-link text-dark btnCreateRunTime">Adauga interval orar</a>
-        </li>
-
-    </ul>
-
-
-    <div class="navbar-nav">
-        <div class="modal fade task-modal-content show" id="CreateRunTime" tabindex="-1" role="dialog" aria-labelledby="CreateRunTimeTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="CreateRunTimeTitle">Adauga un nou interval orar</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form class="p-2">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Aloca pe</label>
-                                        <select class="form-control form-control-light"  id="task-employee">
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="example-number-input">Numar de ore necesare</label>
-                                        <input class="form-control form-control-light" type="number" id="numberOfHours-edit">
-                                    </div>
-                                    <div class="text-right">
-                                        <button type="button" class="btn btn-light" data-dismiss="modal">Inapoi</button>
-                                        <button type="button" class="btn btn-primary" id="save-button" data-dismiss="modal">Salveaza modificari</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <script>
-        $('a.btnCreateRunTime').on('click', function (e) {
+        });
+        $('#end-date').data("datetimepicker").disable();
+        $("#start-date").on("change.datetimepicker", function (e) {
             e.preventDefault();
-            $('#CreateRunTime').modal('show');
-            $.ajax({
-                type: 'GET',
-                url: `/RunningTime/AddMovieRunTime`,
-                async: false,
-                cache: false,
-                timeout: 5000,
-                error: function () {
-                    return true;
-                },
-                success: function (data) {
-                    response = data.data;
-                }
-            });
 
-        })
-    </script>*@
+            var date = new Date(e.date);
+            date.setHours(date.getHours() + 2);   
+            var startDate = new Date(e.date);
+            var endDate = new Date(startDate.setHours(23, 59, 59));
+            debugger;
+
+            var firstDate = $(".datetimepicker-input[name=dateStart]").val();
+            var lastDate = $(".datetimepicker-input[name=endDate]").val();
+            //if (firstDate > lastDate) {
+            //    $('#end-date').data("datetimepicker").date(null);
+            //    debugger;
+            //    $('#end-date').datetimepicker('date', firstDate);
+            //    //$('#end-date').data("datetimepicker").date(first);
+            //}
+            
+            $('#end-date').data("datetimepicker").minDate(date);
+            $('#end-date').data("datetimepicker").maxDate(endDate);
+            $('#end-date > .form-control').prop('disabled', false);
+
+            //$('#start-date > .form-control').prop('disabled', true);
+
+        });
+
+
+    });
+    $("#add-button").on("click", function () {
+
+        var startDate = $("#start-date").data("datetimepicker").date().format("DD-MM-YYYY HH:mm");
+        var endDate = $("#end-date").data("datetimepicker").date().format("DD-MM-YYYY HH:mm");
+        var movieName = $("#movie").val();
+        var cinemaName = $("#cinema").val();
+
+        var timeInterval = {};
+        timeInterval.startDate = startDate;
+        timeInterval.endDate = endDate;
+        timeInterval.movieName = movieName;
+        timeInterval.cinemaName = cinemaName;
+        var timeInterval = JSON.stringify(timeInterval);
+        debugger;
+        $.ajax({
+            type: 'POST',
+            data: { jsonResult: timeInterval },
+            url: '/RunningTime/AddMovieRunTime',
+            dataType: "text",
+            success: function (data) {
+                window.location.reload();
+            }
+        });
+    });
+</script>
+
+<script>
+    $('a.btnEdit').on('click', function (e) {
+        e.preventDefault();
+        var id = $(this).closest('a').data('id');
+        var dateStart = $(this).closest('a').data('data');
+        var cinemaID = $(this).closest('a').data('content');
+        $('#CreareIntervalOrar').data('id', id).data('content', cinemaID).data('data', dateStart).modal('show');
+        var response = undefined;
+        $.ajax({
+            type: 'GET',
+            url: "/RunningTime/EditMovieRunTime/?id=" + id + "&content=" + cinemaID + "&dateStart=" + dateStart,
+            async: false,
+            cache: false,
+            timeout: 5000,
+            error: function () {
+                return true;
+            },
+            success: function (data) {
+                response = data.data;
+            }
+        });
+        debugger;
+        if (response !== undefined) {
+            debugger;
+            var movie = $("#movie").val(response.movieName);
+            var cinema = $("#cinema").val(response.cinemaName);
+            var startDate = $('#start-date').data("datetimepicker").date(response.startDate);
+            var endDate = $('#end-date').data("datetimepicker").date(response.endDate);
+            debugger;
+        }
+
+
+    })
+</script>
+<script>
+    $('a.btnDelete').on('click', function (e) {
+        e.preventDefault();
+        var id = $(this).closest('a').data('id');
+        var dateStart = $(this).closest('a').data('data');
+        var cinemaID = $(this).closest('a').data('content');
+        $('#DeleteModal').data('id', id).data('content', cinemaID).data('data', dateStart).modal('show');
+        debugger;
+    });
+    $("#btnDeleteYes").on("click", function () {
+        var id = $('#DeleteModal').data('id');
+        var dateStart = $('#DeleteModal').data('data');
+        var cinemaID = $('#DeleteModal').data('content');
+        var myUrl = "/RunningTime/Delete/?id="+id+"&content="+cinemaID+"&dateStart="+dateStart; 
+
+        var response = deleteProject(myUrl);
+    });
+
+    function deleteProject(url) {
+        var dataResponse;
+        $.ajax({
+            type: 'GET',
+            url: url,
+            async: false,
+            cache: false,
+            timeout: 5000,
+            success: function (data) {
+                toastr.success(data.message);
+            },
+        });
+        debugger;
+        return dataResponse;
+    }
+</script>
+
+@*//var startDate = $('#start-date').val("date");
+    //var startDates= $('#start-date').data("datetimepicker").date()
+    //var endDate = $('#end-date').data('date');
+    //var formatFirstDate = moment(startDate, "DD-MM-YYYY HH:mm");
+    //var FirstDate = formatFirstDate.format("DD-MM-YYYY HH:mm:ssZ");
+    //var formatSecondDate = moment(endDate, "DD-MM-YYYY HH:mm");
+    //var SecondDate = formatSecondDate.format("DD-MM-YYYY HH:mm:ssZ");
+    //myAlert = document.getElementById('alert');
+    //var statusAlert = myAlert.style.display;
+    //if (moment(FirstDate).isAfter(SecondDate)) {
+    //    debugger;
+    //}
+                myAlert = document.getElementById('alert');
+    var statusAlert = myAlert.style.display;
+    debugger;
+    if (titleMovie == null) {
+
+        myAlert.style.display = 'block';
+        debugger;
+    }
+    else {
+        myAlert.style.display = 'none';
+    }
+    debugger;
+
+    //debugger;*@
